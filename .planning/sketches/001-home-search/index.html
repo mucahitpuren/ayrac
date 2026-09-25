@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch 001: Home Search</title>
+<link rel="stylesheet" href="../themes/default.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); background: #d9d9d6; color: var(--color-text); padding: 60px 16px 48px; min-height: 100vh; }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; border: none; background: none; }
+  kbd { font-family: var(--font-mono); font-size: 11px; padding: 1px 6px; border-radius: 5px; border: 1px solid var(--color-border); background: var(--color-surface-2); color: var(--color-text-muted); }
+
+  /* ---------- Variant nav ---------- */
+  #variant-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 9998; background: #1c1c1e; padding: 10px 16px; display: flex; gap: 8px; flex-wrap: wrap; font-family: system-ui; }
+  .variant-tab { padding: 6px 12px; border-radius: 8px; color: #bbb; font-size: 13px; transition: all .15s ease; }
+  .variant-tab:hover { background: #333; color: #fff; }
+  .variant-tab.active { background: #fff; color: #111; font-weight: 600; }
+
+  /* ---------- Frame: browser window (desktop) or phone ---------- */
+  .device { width: min(var(--device-w, 1280px), 100%); height: 780px; margin: 0 auto; background: var(--color-bg); border-radius: 12px; box-shadow: 0 30px 60px rgba(0,0,0,.25), 0 0 0 1px #aaa; overflow: hidden; position: relative; transition: width .25s ease; container-type: inline-size; container-name: app; display: flex; flex-direction: column; }
+  .device.phone { border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,.25), 0 0 0 10px #111; }
+  .chrome { flex: none; height: 38px; background: #e8e8e6; border-bottom: 1px solid #d0d0cc; display: flex; align-items: center; gap: 8px; padding: 0 14px; }
+  .chrome i { width: 11px; height: 11px; border-radius: 99px; background: #ccc; display: block; }
+  .chrome i:nth-child(1) { background: #ff5f57; } .chrome i:nth-child(2) { background: #febc2e; } .chrome i:nth-child(3) { background: #28c840; }
+  .chrome .url { margin-left: 14px; flex: 1; max-width: 460px; height: 24px; border-radius: 7px; background: #fff; font-size: 12px; color: #666; display: flex; align-items: center; padding: 0 10px; }
+  .statusbar { flex: none; height: 44px; display: none; align-items: center; justify-content: space-between; padding: 0 28px; font-size: 14px; font-weight: 600; }
+  .device.phone .chrome { display: none; }
+  .device.phone .statusbar { display: flex; }
+  .app { flex: 1; min-height: 0; position: relative; }
+  .variant { display: none; height: 100%; position: relative; }
+  .variant.active { display: block; }
+  .scroll { height: 100%; overflow-y: auto; scrollbar-width: thin; }
+
+  /* ---------- Covers ---------- */
+  .cover { position: relative; aspect-ratio: 2 / 3; border-radius: var(--radius-cover); box-shadow: var(--shadow-cover); overflow: hidden; padding: 10% 9%; display: flex; flex-direction: column; justify-content: space-between; color: rgba(255,255,255,.95); transition: transform .15s ease, box-shadow .15s ease; }
+  .cover::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 6%; background: linear-gradient(90deg, rgba(0,0,0,.25), rgba(255,255,255,.08)); }
+  .cover > * { position: relative; min-height: 0; }
+  .tile:hover .cover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .cover .ct { font-family: var(--font-serif); font-weight: 600; line-height: 1.12; font-size: 14px; text-wrap: balance; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+  .cover .ca { font-size: 9px; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
+  .cover.sm { width: 46px; flex: none; padding: 5px; border-radius: 2px; }
+  .cover.sm .ct { font-size: 6px; }
+  .cover.sm .ca { display: none; }
+  .copies-dot { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,.55); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 99px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 28px 20px; }
+  @container app (max-width: 600px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 14px; } }
+  .tile { cursor: pointer; }
+  .tile .meta { margin-top: 9px; font-size: 13px; line-height: 1.3; }
+  .tile .meta b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tile .meta span { color: var(--color-text-muted); font-size: 12px; }
+
+  /* ---------- Search input ---------- */
+  .search { display: flex; align-items: center; gap: 10px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 0 14px; height: 44px; box-shadow: var(--shadow-sm); transition: all .15s ease; }
+  .search:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 4px var(--color-primary-soft); }
+  .search input { flex: 1; border: none; outline: none; background: none; font-size: 15px; min-width: 0; }
+  .search .clear { width: 22px; height: 22px; border-radius: 99px; background: var(--color-surface-2); color: var(--color-text-muted); font-size: 12px; display: none; }
+  .search.has-value .clear { display: block; }
+  .search.has-value kbd { display: none; }
+  .search svg { flex: none; color: var(--color-text-muted); }
+  @container app (max-width: 600px) { .search kbd { display: none; } .search input { font-size: 16px; } }
+
+  /* ---------- Results ---------- */
+  .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 4px 16px; }
+  @container app (max-width: 600px) { .results-grid { grid-template-columns: 1fr; } }
+  .result { display: flex; gap: 14px; align-items: center; padding: 12px; border-radius: var(--radius-md); transition: background .15s ease; cursor: pointer; }
+  .result:hover, .result.sel { background: var(--color-surface-2); }
+  .result .info { flex: 1; min-width: 0; }
+  .result .title { font-weight: 600; font-size: 15px; }
+  .result .author { color: var(--color-text-muted); font-size: 13px; margin-top: 1px; }
+  .badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; font-size: 12px; font-weight: 600; color: var(--color-success); background: var(--color-success-soft); padding: 3px 9px; border-radius: 99px; }
+  mark { background: none; color: var(--color-primary); font-weight: 700; }
+
+  .verdict { border-radius: var(--radius-lg); padding: 18px 20px 16px; margin-bottom: 14px; }
+  .verdict.yes { background: var(--color-success-soft); color: var(--color-success); }
+  .verdict.no { background: var(--color-surface-2); color: var(--color-text); }
+  .verdict.maybe { background: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface)); color: var(--color-text); }
+  .verdict .v-head { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; }
+  .verdict .v-sub { font-size: 13px; margin-top: 4px; color: var(--color-text-muted); }
+  .verdict.yes .v-sub { color: var(--color-success); opacity: .85; }
+  .icon-circle { width: 30px; height: 30px; border-radius: 99px; display: grid; place-items: center; flex: none; font-size: 16px; }
+  .yes .icon-circle { background: var(--color-success); color: #fff; }
+  .no .icon-circle { background: var(--color-border); color: var(--color-text-muted); }
+  .maybe .icon-circle { background: var(--color-accent); color: #fff; font-weight: 800; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: var(--radius-md); font-weight: 600; font-size: 14px; transition: all .15s ease; }
+  .btn-primary { background: var(--color-primary); color: #fff; }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .btn-ghost { background: var(--color-surface); border: 1px solid var(--color-border); }
+  .btn-ghost:hover { background: var(--color-surface-2); }
+
+  .suggest { margin-top: 14px; font-size: 13px; color: var(--color-text-muted); }
+  .suggest button { display: inline-block; margin: 6px 6px 0 0; padding: 6px 12px; border-radius: 99px; background: var(--color-surface); border: 1px solid var(--color-border); font-size: 13px; color: var(--color-text); transition: all .15s ease; }
+  .suggest button:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  .empty-hint { text-align: center; color: var(--color-text-muted); padding: 30px 10px; font-size: 14px; }
+
+  .section-label { font-size: 12px; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: .07em; margin: 30px 0 14px; }
+  .h-scroll { display: flex; gap: 18px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
+  .h-scroll .tile { width: 128px; flex: none; }
+  @container app (max-width: 600px) { .h-scroll .tile { width: 100px; } }
+  .count { font-size: 13px; color: var(--color-text-muted); }
+  .brand { font-family: var(--font-serif); font-size: 26px; font-weight: 700; letter-spacing: -.01em; }
+  .avatar { width: 34px; height: 34px; border-radius: 99px; background: var(--color-primary-soft); color: var(--color-primary); display: grid; place-items: center; font-weight: 700; font-size: 14px; flex: none; }
+  .navlinks { display: flex; gap: 4px; }
+  .navlinks button { padding: 7px 12px; border-radius: 8px; font-size: 14px; color: var(--color-text-muted); transition: all .15s ease; }
+  .navlinks button:hover { background: var(--color-surface-2); color: var(--color-text); }
+  .navlinks button.on { color: var(--color-text); font-weight: 600; }
+
+  /* ================= VARIANT A: top bar ================= */
+  .a-top { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--color-bg) 88%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--color-border); }
+  .a-bar { max-width: 1240px; margin: 0 auto; display: flex; align-items: center; gap: 24px; padding: 14px 32px; }
+  .a-bar .search { flex: 1; max-width: 560px; margin: 0 auto; }
+  .a-body { max-width: 1240px; margin: 0 auto; padding: 26px 32px 60px; }
+  .a-body h2 { font-family: var(--font-serif); font-size: var(--text-3xl); }
+  .a-headrow { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 22px; }
+  @container app (max-width: 600px) {
+    .a-bar { flex-wrap: wrap; gap: 12px; padding: 4px 20px 14px; }
+    .a-bar .brand { flex: 1; }
+    .a-bar .navlinks { display: none; }
+    .a-bar .search { order: 3; flex-basis: 100%; max-width: none; }
+    .a-body { padding: 16px 20px 40px; }
+    .a-body h2 { font-size: var(--text-xl); }
+  }
+
+  /* ================= VARIANT B: centered hero ================= */
+  .b-top { display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; }
+  .b-body { max-width: 1100px; margin: 0 auto; padding: 0 32px 60px; }
+  .b-hero { text-align: center; padding: 70px 0 28px; transition: padding .25s ease; }
+  .b-hero h1 { font-family: var(--font-serif); font-size: 52px; line-height: 1.05; letter-spacing: -.02em; transition: font-size .25s ease; }
+  .b-hero p { color: var(--color-text-muted); margin-top: 10px; font-size: 16px; }
+  .b-body .search { height: 58px; border-radius: var(--radius-full); max-width: 680px; margin: 0 auto; padding: 0 22px; box-shadow: var(--shadow-md); }
+  .b-body .search input { font-size: 18px; }
+  .b-body.searching .b-hero { padding: 10px 0 18px; }
+  .b-body.searching .b-hero h1 { font-size: var(--text-2xl); }
+  .b-body.searching .b-hero p { display: none; }
+  .b-results { max-width: 900px; margin: 22px auto 0; }
+  @container app (max-width: 600px) {
+    .b-top { padding: 4px 20px; }
+    .b-top .navlinks { display: none; }
+    .b-body { padding: 0 20px 40px; }
+    .b-hero { text-align: left; padding: 22px 0 18px; }
+    .b-hero h1 { font-size: var(--text-4xl); }
+    .b-body .search { height: 54px; border-radius: var(--radius-lg); }
+  }
+
+  /* ================= VARIANT C: sidebar + command palette / sheet ================= */
+  .c-layout { display: flex; height: 100%; }
+  .c-side { width: 236px; flex: none; border-right: 1px solid var(--color-border); background: var(--color-surface); padding: 20px 14px; display: flex; flex-direction: column; gap: 4px; }
+  .c-side .brand { padding: 0 10px 18px; }
+  .c-side .item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; font-size: 14px; color: var(--color-text-muted); transition: all .15s ease; text-align: left; width: 100%; }
+  .c-side .item:hover { background: var(--color-surface-2); color: var(--color-text); }
+  .c-side .item.on { background: var(--color-primary-soft); color: var(--color-primary); font-weight: 600; }
+  .c-side .item .n { margin-left: auto; font-size: 12px; opacity: .7; }
+  .c-side .search-trigger { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--color-border); background: var(--color-bg); color: var(--color-text-muted); font-size: 14px; margin-bottom: 14px; transition: all .15s ease; }
+  .c-side .search-trigger:hover { border-color: var(--color-primary); color: var(--color-text); }
+  .c-side .search-trigger kbd { margin-left: auto; }
+  .c-side .foot { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; font-size: 13px; }
+  .c-main { flex: 1; min-width: 0; }
+  .c-body { padding: 28px 36px 60px; }
+  .c-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; }
+  .c-head h1 { font-family: var(--font-serif); font-size: var(--text-3xl); }
+  .c-dock { display: none; }
+  .c-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.3); z-index: 14; opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+  .c-backdrop.open { opacity: 1; pointer-events: auto; }
+  .c-palette { position: absolute; z-index: 15; left: 50%; top: 11%; width: min(680px, 92%); max-height: 72%; transform: translate(-50%, -8px) scale(.98); opacity: 0; pointer-events: none; background: var(--color-surface); border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.28); display: flex; flex-direction: column; transition: all .18s ease; overflow: hidden; }
+  .c-palette.open { opacity: 1; pointer-events: auto; transform: translate(-50%, 0) scale(1); }
+  .c-palette .search { border: none; border-bottom: 1px solid var(--color-border); border-radius: 0; box-shadow: none; height: 58px; padding: 0 18px; }
+  .c-palette .search:focus-within { box-shadow: none; }
+  .c-palette .search input { font-size: 17px; }
+  .c-palette .p-body { overflow-y: auto; padding: 14px; flex: 1; }
+  .c-palette .p-foot { flex: none; border-top: 1px solid var(--color-border); padding: 8px 16px; font-size: 12px; color: var(--color-text-muted); display: flex; gap: 16px; }
+  .c-palette .grab { display: none; }
+  .c-palette .results-grid { grid-template-columns: 1fr; }
+  @container app (max-width: 600px) {
+    .c-side { display: none; }
+    .c-body { padding: 4px 20px 170px; }
+    .c-head h1 { font-size: var(--text-3xl); }
+    .c-dock { display: block; position: absolute; left: 0; right: 0; bottom: 0; z-index: 13; padding: 12px 16px 24px; background: linear-gradient(to top, var(--color-bg) 70%, transparent); }
+    .c-dock .fake-search { width: 100%; display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 18px; border-radius: 99px; background: var(--color-surface); border: 1px solid var(--color-border); box-shadow: var(--shadow-lg); color: var(--color-text-muted); font-size: 16px; }
+    .c-tabs { display: flex; justify-content: space-around; margin-top: 12px; font-size: 11px; color: var(--color-text-muted); }
+    .c-tabs button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 2px 10px; }
+    .c-tabs button.on { color: var(--color-primary); }
+    .c-tabs .i { font-size: 18px; }
+    /* palette becomes a bottom sheet on phones */
+    .c-palette { left: 0; right: 0; top: auto; bottom: 0; width: 100%; max-height: none; height: 82%; border-radius: 24px 24px 0 0; transform: translateY(105%); opacity: 1; transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+    .c-palette.open { transform: translateY(0); }
+    .c-palette .grab { display: block; width: 40px; height: 5px; border-radius: 99px; background: var(--color-border); margin: 10px auto 2px; flex: none; }
+    .c-palette .search { margin: 6px 14px 4px; border: 1px solid var(--color-border); border-radius: var(--radius-md); height: 48px; }
+    .c-palette .p-foot { display: none; }
+  }
+
+  /* ================= VARIANT D: synthesis ================= */
+  .d-hello { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 8px; flex-wrap: wrap; }
+  .d-hello h2 { font-family: var(--font-serif); font-size: var(--text-3xl); }
+  .seg { display: inline-flex; background: var(--color-surface-2); border-radius: 10px; padding: 3px; gap: 2px; }
+  .seg button { padding: 6px 12px; border-radius: 8px; font-size: 13px; color: var(--color-text-muted); transition: all .15s ease; }
+  .seg button:hover { color: var(--color-text); }
+  .seg button.on { background: var(--color-surface); color: var(--color-text); font-weight: 600; box-shadow: var(--shadow-sm); }
+  .shelf { margin-top: 34px; }
+  .shelf-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+  .shelf-head h3 { font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 700; }
+  .shelf-head .kind { font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--color-text-muted); }
+  .shelf-head .more { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--color-primary); white-space: nowrap; }
+  .shelf-head .more:hover { text-decoration: underline; }
+  .shelf-row { display: flex; gap: 20px; overflow-x: auto; padding: 4px 2px 14px; scrollbar-width: thin; scroll-snap-type: x proximity; }
+  .shelf-row .tile { width: 132px; flex: none; scroll-snap-align: start; }
+  .shelf-row.as-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); grid-template-rows: auto; grid-auto-rows: 0; overflow: hidden; row-gap: 0; }
+  .shelf-row.as-grid .tile { width: auto; }
+  .pos { position: absolute; left: 8px; bottom: 8px; background: rgba(255,255,255,.92); color: #111; font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 99px; }
+  .cover.ghost { background: repeating-linear-gradient(135deg, var(--color-surface-2), var(--color-surface-2) 8px, var(--color-bg) 8px, var(--color-bg) 16px) !important; box-shadow: inset 0 0 0 2px var(--color-border); color: var(--color-text-muted); align-items: center; justify-content: center; text-align: center; }
+  .cover.ghost::before { display: none; }
+  .d-toolbar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-bottom: 24px; padding: 12px 14px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: 13px; color: var(--color-text-muted); }
+  .d-toolbar label { display: flex; align-items: center; gap: 8px; }
+  .d-toolbar select { font: inherit; color: var(--color-text); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 8px; padding: 6px 8px; }
+  .d-reset { font-size: 13px; color: var(--color-primary); font-weight: 600; display: none; }
+  .d-reset.show { display: inline; }
+  .lib-list { display: flex; flex-direction: column; }
+  .lib-list .result { border-bottom: 1px solid var(--color-border); border-radius: 0; }
+  .lib-list .cols { display: flex; gap: 18px; font-size: 13px; color: var(--color-text-muted); }
+  .lib-list .cols span { width: 130px; flex: none; }
+  .lib-list .cols span.status { width: auto; }
+  .status { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: var(--color-surface-2); color: var(--color-text-muted); }
+  .status.read { background: var(--color-success-soft); color: var(--color-success); }
+  .status.reading { background: var(--color-primary-soft); color: var(--color-primary); }
+  @container app (max-width: 600px) {
+    .shelf-row .tile { width: 104px; }
+    .shelf-row.as-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .d-hello h2 { font-size: var(--text-2xl); }
+    .d-toolbar { gap: 8px; }
+    .lib-list .cols { display: none; }
+  }
+
+  #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1c1c1e; color: #fff; padding: 10px 18px; border-radius: 99px; font-size: 14px; opacity: 0; transition: all .2s ease; pointer-events: none; z-index: 10000; }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .notes { max-width: 900px; margin: 26px auto 0; font-size: 13px; color: #555; line-height: 1.6; }
+  .notes b { color: #222; }
+</style>
+</head>
+<body>
+
+<div id="variant-nav">
+  <button class="variant-tab active" onclick="showVariant('a', this)">A: Üst menüde arama + kapak ızgarası</button>
+  <button class="variant-tab" onclick="showVariant('b', this)">B: Ortada "Bende var mı?" araması + net cevap</button>
+  <button class="variant-tab" onclick="showVariant('c', this)">C: Kenar menüsü + komut paleti (Ctrl+K)</button>
+  <button class="variant-tab" onclick="showVariant('d', this)" style="border:1px solid #7cc4a4">Sentez: A + raflar + tam kütüphane ★ Seçildi</button>
+</div>
+
+<div class="device" id="device">
+  <div class="chrome"><i></i><i></i><i></i><div class="url">🔒 ayrac.app</div></div>
+  <div class="statusbar"><span>9:41</span><span>●●● ▮</span></div>
+  <div class="app">
+
+    <!-- ============ VARIANT A ============ -->
+    <div id="variant-a" class="variant active">
+      <div class="scroll">
+        <div class="a-top"><div class="a-bar">
+          <div class="brand">Ayraç</div>
+          <label class="search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input placeholder="Kütüphanende ara: başlık ya da yazar…" data-variant="a" autocomplete="off">
+            <kbd>/</kbd>
+            <button class="clear" type="button">✕</button>
+          </label>
+          <nav class="navlinks"><button class="on">Kütüphane</button><button onclick="toast('İstek listesi (Faz 6)')">İstek listesi</button><button onclick="toast('Seriler (Faz 6)')">Seriler</button><button onclick="toast('İstatistik (Faz 5)')">İstatistik</button></nav>
+          <div class="avatar">M</div>
+        </div></div>
+        <div class="a-body">
+          <div id="a-library">
+            <div class="a-headrow"><h2>Kütüphanem</h2><span class="count" id="a-count"></span></div>
+            <div class="grid" id="a-grid"></div>
+          </div>
+          <div id="a-results" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ VARIANT B ============ -->
+    <div id="variant-b" class="variant">
+      <div class="scroll">
+        <div class="b-top"><div class="brand">Ayraç</div>
+          <div style="display:flex;gap:16px;align-items:center"><nav class="navlinks"><button onclick="toast('Kütüphane')">Kütüphane</button><button onclick="toast('İstek listesi (Faz 6)')">İstek listesi</button><button onclick="toast('İstatistik (Faz 5)')">İstatistik</button></nav><div class="avatar">M</div></div>
+        </div>
+        <div class="b-body" id="b-body">
+          <div class="b-hero">
+            <h1>Bende var mı?</h1>
+            <p>Kütüphanende <b id="b-total"></b> eser var. Bir başlık ya da yazar yaz.</p>
+          </div>
+          <label class="search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input placeholder="örn. seker portakali" data-variant="b" autocomplete="off">
+            <button class="clear" type="button">✕</button>
+          </label>
+          <div id="b-idle">
+            <div class="section-label">Son eklenenler</div>
+            <div class="h-scroll" id="b-recent"></div>
+            <div class="section-label">Seriler · Darren Shan Destanı</div>
+            <div class="h-scroll" id="b-series"></div>
+          </div>
+          <div class="b-results" id="b-results" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ VARIANT C ============ -->
+    <div id="variant-c" class="variant">
+      <div class="c-layout">
+        <aside class="c-side">
+          <div class="brand">Ayraç</div>
+          <button class="search-trigger" onclick="openPalette()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            Bende var mı?<kbd>Ctrl K</kbd>
+          </button>
+          <button class="item on">▦ Kütüphane<span class="n" id="c-n"></span></button>
+          <button class="item" onclick="toast('İstek listesi (Faz 6)')">♡ İstek listesi<span class="n">4</span></button>
+          <button class="item" onclick="toast('Seriler (Faz 6)')">☰ Seriler<span class="n">3</span></button>
+          <button class="item" onclick="toast('İstatistik (Faz 5)')">◔ İstatistik</button>
+          <button class="item" onclick="toast('Excel içe aktar (Faz 3)')">⇪ İçe aktar</button>
+          <div class="foot"><div class="avatar">M</div><div><b>Mücahit</b><br><span class="count">Ayarlar</span></div></div>
+        </aside>
+        <main class="c-main"><div class="scroll">
+          <div class="c-body">
+            <div class="c-head"><h1>Kütüphanem</h1><span class="count" id="c-count"></span></div>
+            <div class="grid" id="c-grid"></div>
+          </div>
+        </div></main>
+      </div>
+      <div class="c-dock">
+        <button class="fake-search" onclick="openPalette()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          Bende var mı? Ara…
+        </button>
+        <div class="c-tabs">
+          <button class="on"><span class="i">▦</span>Kütüphane</button>
+          <button onclick="toast('İstek listesi (Faz 6)')"><span class="i">♡</span>İstek</button>
+          <button onclick="toast('Kitap ekle')"><span class="i">＋</span>Ekle</button>
+          <button onclick="toast('İstatistik (Faz 5)')"><span class="i">◔</span>İstatistik</button>
+        </div>
+      </div>
+      <div class="c-backdrop" id="c-backdrop" onclick="closePalette()"></div>
+      <div class="c-palette" id="c-palette">
+        <div class="grab"></div>
+        <label class="search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input placeholder="Bende var mı? Başlık ya da yazar…" data-variant="c" autocomplete="off">
+          <kbd>Esc</kbd>
+          <button class="clear" type="button">✕</button>
+        </label>
+        <div class="p-body" id="c-results"></div>
+        <div class="p-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> gezin</span><span><kbd>Enter</kbd> aç</span><span><kbd>Esc</kbd> kapat</span></div>
+      </div>
+    </div>
+
+    <!-- ============ VARIANT D: synthesis ============ -->
+    <div id="variant-d" class="variant">
+      <div class="scroll" id="d-scroll">
+        <div class="a-top"><div class="a-bar">
+          <button class="brand" onclick="dGo('home')">Ayraç</button>
+          <label class="search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input placeholder="Bende var mı? Başlık ya da yazar…" data-variant="d" autocomplete="off">
+            <kbd>/</kbd>
+            <button class="clear" type="button">✕</button>
+          </label>
+          <nav class="navlinks" id="d-nav">
+            <button data-page="home" class="on" onclick="dGo('home')">Ana sayfa</button>
+            <button data-page="library" onclick="dGo('library')">Kütüphane</button>
+            <button onclick="toast('İstek listesi (Faz 6)')">İstek listesi</button>
+            <button onclick="toast('İstatistik (Faz 5)')">İstatistik</button>
+          </nav>
+          <div class="avatar">M</div>
+        </div></div>
+
+        <!-- Home: shelves -->
+        <div class="a-body" id="d-home">
+          <div class="d-hello">
+            <div><h2>İyi akşamlar, Mücahit</h2><p class="count" id="d-hello-sub"></p></div>
+            <div class="seg" title="Raf stili">
+              <button class="on" onclick="dShelfStyle('scroll', this)">↔ Kaydırmalı raf</button>
+              <button onclick="dShelfStyle('grid', this)">▦ Tek sıra ızgara</button>
+            </div>
+          </div>
+          <div id="d-shelves"></div>
+        </div>
+
+        <!-- Library: everything, sortable + filterable -->
+        <div class="a-body" id="d-library" style="display:none">
+          <div class="a-headrow"><h2>Tüm kütüphanem</h2><span class="count" id="d-lib-count"></span></div>
+          <div class="d-toolbar">
+            <label>Sırala
+              <select id="d-sort" onchange="dRenderLibrary()">
+                <option value="added">Son eklenen</option>
+                <option value="title">Başlık (A→Z)</option>
+                <option value="author">Yazar (A→Z)</option>
+              </select>
+            </label>
+            <label>Tür <select id="d-f-genre" onchange="dRenderLibrary()"></select></label>
+            <label>Format <select id="d-f-format" onchange="dRenderLibrary()"></select></label>
+            <label>Durum <select id="d-f-status" onchange="dRenderLibrary()"></select></label>
+            <button class="d-reset" id="d-reset" onclick="dResetFilters()">Filtreleri temizle</button>
+            <div class="seg" style="margin-left:auto">
+              <button class="on" id="d-v-grid" onclick="dView('grid')">▦</button>
+              <button id="d-v-list" onclick="dView('list')">☰</button>
+            </div>
+          </div>
+          <div id="d-lib"></div>
+        </div>
+
+        <!-- Search results -->
+        <div class="a-body" id="d-results" style="display:none"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="notes">
+  <b>Denenecekler:</b> Aramaya <i>1984</i>, <i>nutuk</i>, <i>seker portakali</i>, <i>irmina</i>, <i>darren</i> yaz; Türkçe karakter gerekmez.
+  Yazım hatası için <i>fahrenhayt</i> (Emin değilim durumu), olmayan kitap için <i>sapiens</i> dene.
+  C'de <kbd>Ctrl K</kbd> ya da <kbd>/</kbd> paleti açar; A'da <kbd>/</kbd> aramaya odaklar.
+  Sağ alttaki araç çubuğundan tema (açık / koyu / kâğıt) ve görünüm (🖥 masaüstü / 📱 telefon) değiştirilebilir. Aynı sayfa ekran genişliğine göre düzen değiştirir.
+</div>
+
+<div id="toast"></div>
+
+<div id="sketch-tools" style="position:fixed;bottom:12px;right:12px;z-index:9999;font-family:system-ui;font-size:12px;background:rgba(0,0,0,0.78);color:white;padding:8px 12px;border-radius:8px;opacity:0.55;transition:opacity 0.2s;display:flex;gap:10px;align-items:center" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.55'">
+  <select id="theme-switcher" onchange="document.querySelector('link[href*=themes]').href='../themes/'+this.value+'.css'" style="font-size:12px">
+    <option value="default">Açık (default)</option>
+    <option value="midnight">Koyu (midnight)</option>
+    <option value="paper">Kâğıt (paper)</option>
+  </select>
+  <span style="display:flex;gap:4px">
+    <button onclick="setViewport(1280)" style="color:#fff" title="Masaüstü">🖥</button>
+    <button onclick="setViewport(768)" style="color:#fff" title="Tablet">▭</button>
+    <button onclick="setViewport(390)" style="color:#fff" title="Telefon">📱</button>
+  </span>
+</div>
+
+<script>
+// ---------- Real-ish data from the author's library ----------
+const WORKS = [
+  { t: '1984', a: 'George Orwell', copies: [{ f: 'Grafik roman', p: 'Domingo' }, { f: 'Roman', p: 'Anonim' }] },
+  { t: 'Nutuk', a: 'Mustafa Kemal Atatürk', copies: [{ f: 'Karikatür', p: 'Doğan Kitap' }, { f: 'Ciltli baskı', p: 'Yapı Kredi' }] },
+  { t: 'Gençler İçin Fotoğraflarla Nutuk', a: 'Mustafa Kemal Atatürk', copies: [{ f: 'Fotoğraflı', p: 'İş Bankası Kültür' }] },
+  { t: 'Şeker Portakalı', a: 'José Mauro de Vasconcelos', copies: [{ f: 'Roman', p: 'Can' }, { f: 'Grafik roman', p: 'Ex Libris' }] },
+  { t: 'Dönüşüm', a: 'Franz Kafka', copies: [{ f: 'Roman', p: 'İş Bankası Kültür' }, { f: 'Roman', p: 'İndigo' }] },
+  { t: 'Fahrenheit 451', a: 'Ray Bradbury', copies: [{ f: 'Grafik roman', p: 'Epsilon' }, { f: 'Roman', p: 'İthaki' }] },
+  { t: 'Ucubeler Sirki', a: 'Darren Shan', s: 'Darren Shan Destanı #1', copies: [{ f: 'Roman', p: 'Tudem' }] },
+  { t: 'Vampirin Asistanı', a: 'Darren Shan', s: 'Darren Shan Destanı #2', copies: [{ f: 'Roman', p: 'Tudem' }] },
+  { t: 'Kan Tünelleri', a: 'Darren Shan', s: 'Darren Shan Destanı #3', copies: [{ f: 'Roman', p: 'Tudem' }] },
+  { t: 'Vampirler Dağı', a: 'Darren Shan', s: 'Darren Shan Destanı #4', copies: [{ f: 'Roman', p: 'Tudem' }] },
+  { t: 'Ölümcül Sınav', a: 'Darren Shan', s: 'Darren Shan Destanı #5', copies: [{ f: 'Roman', p: 'Tudem' }] },
+  { t: 'Vampir Prensi', a: 'Darren Shan', s: 'Darren Shan Destanı #6', copies: [{ f: 'Roman', p: 'Tudem' }] },
+  { t: 'Kaderin Çocukları', a: 'Darren Shan', s: 'Darren Shan Destanı #12', copies: [{ f: 'Roman', p: 'Tudem' }] },
+  { t: 'Habibi', a: 'Craig Thompson', copies: [{ f: 'Grafik roman', p: 'Karakarga' }] },
+  { t: 'Watchmen', a: 'Alan Moore', copies: [{ f: 'Grafik roman', p: 'İthaki' }] },
+  { t: 'Maus', a: 'Art Spiegelman', copies: [{ f: 'Grafik roman', p: 'İletişim' }] },
+  { t: 'Persepolis', a: 'Marjane Satrapi', copies: [{ f: 'Grafik roman', p: 'Panama' }] },
+  { t: 'İrmina', a: 'Barbara Yelin', copies: [{ f: 'Grafik roman', p: 'Karakarga' }] },
+  { t: 'Kudüs Günlükleri', a: 'Guy Delisle', copies: [{ f: 'Grafik roman', p: 'Karakarga' }] },
+  { t: 'Küçük Prens', a: 'Antoine de Saint-Exupéry', copies: [{ f: 'Roman', p: 'Yemek Sepeti' }] },
+  { t: 'Simyacı', a: 'Paulo Coelho', copies: [{ f: 'Roman', p: 'Can' }] },
+  { t: 'Kuyucaklı Yusuf', a: 'Sabahattin Ali', copies: [{ f: 'Grafik roman', p: 'Everest' }] },
+  { t: 'Kinyas ve Kayra', a: 'Hakan Günday', copies: [{ f: 'Roman', p: 'Doğan Kitap' }] },
+  { t: 'Balıkçı ve Oğlu', a: 'Zülfü Livaneli', copies: [{ f: 'Roman', p: 'İnkılâp' }] },
+  { t: 'Kendine Ait Bir Oda', a: 'Virginia Woolf', copies: [{ f: 'Deneme', p: 'İndigo' }] },
+  { t: 'Martin Eden', a: 'Jack London', copies: [{ f: 'Roman', p: 'İş Bankası Kültür' }] },
+  { t: 'Satranç', a: 'Stefan Zweig', copies: [{ f: 'Novella', p: 'İş Bankası Kültür' }] },
+  { t: 'Otomatik Portakal', a: 'Anthony Burgess', copies: [{ f: 'Roman', p: 'İş Bankası Kültür' }] },
+  { t: 'Hayvan Çiftliği', a: 'George Orwell', copies: [{ f: 'Roman', p: 'Anonim' }] },
+  { t: 'Momo', a: 'Michael Ende', copies: [{ f: 'Roman', p: 'Pegasus' }] },
+  { t: 'Nietzsche Ağladığında', a: 'Irvin Yalom', copies: [{ f: 'Roman', p: 'Ayrıntı' }] },
+  { t: 'Göğe Bakma Durağı', a: 'Turgut Uyar', copies: [{ f: 'Şiir', p: 'Yapı Kredi' }] },
+  { t: 'Metro 2033', a: 'Dmitry Glukhovsky', copies: [{ f: 'Roman', p: 'Panama' }] },
+  { t: 'Kızıl Veba', a: 'Jack London', copies: [{ f: 'Roman', p: 'İş Bankası Kültür' }] },
+  { t: 'Kültâ – Ölüme Giden Yol', a: 'Ahmet Fettah Ekbiç', copies: [{ f: 'Roman', p: 'Kitapyurdu' }] },
+  { t: 'Watchmen', a: 'Alan Moore', copies: [{ f: 'Grafik roman', p: 'İthaki' }] },
+].filter((w, i, arr) => arr.findIndex(x => x.t === w.t) === i);
+
+// ---------- Turkish-aware folding (the core-value mechanic) ----------
+function fold(s) {
+  return String(s)
+    .replace(/İ/g, 'i').replace(/I/g, 'ı')
+    .toLocaleLowerCase('tr')
+    .replace(/ı/g, 'i').replace(/ş/g, 's').replace(/ç/g, 'c').replace(/ğ/g, 'g')
+    .replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/[âà]/g, 'a').replace(/[îì]/g, 'i').replace(/[ûù]/g, 'u').replace(/é/g, 'e')
+    .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function lev(a, b) {
+  const m = a.length, n = b.length, d = Array.from({ length: m + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= n; j++) d[0][j] = j;
+  for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++)
+    d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+  return d[m][n];
+}
+function search(q) {
+  const fq = fold(q);
+  if (!fq) return { hits: [], near: [] };
+  const hits = WORKS.filter(w => fold(w.t).includes(fq) || fold(w.a).includes(fq));
+  let near = [];
+  if (!hits.length && fq.length >= 3) {
+    near = WORKS.map(w => {
+      const words = fold(w.t).split(' ').concat(fold(w.a).split(' '));
+      const best = Math.min(...words.map(x => lev(fq, x.slice(0, Math.max(fq.length, x.length)))), lev(fq, fold(w.t)));
+      return { w, d: best };
+    }).filter(x => x.d <= Math.max(2, Math.floor(fq.length / 3))).sort((a, b) => a.d - b.d).slice(0, 3).map(x => x.w);
+  }
+  return { hits, near };
+}
+
+// ---------- Rendering helpers ----------
+const PALETTE = [[18,48,38],[210,40,34],[28,55,42],[350,38,36],[200,35,30],[260,25,34],[40,50,40],[160,30,28],[5,45,40],[220,30,24]];
+function hueFor(t) { let h = 0; for (const c of t) h = (h * 31 + c.charCodeAt(0)) >>> 0; return PALETTE[h % PALETTE.length]; }
+const esc = s => s.replace(/'/g, "\\'");
+function coverHTML(w, cls = '') {
+  const [h, s, l] = hueFor(w.t);
+  const bg = `linear-gradient(160deg, hsl(${h} ${s}% ${l + 8}%), hsl(${h} ${s}% ${l - 6}%))`;
+  const dot = w.copies.length > 1 && !cls ? `<span class="copies-dot">×${w.copies.length}</span>` : '';
+  return `<div class="cover ${cls}" style="background:${bg}"><div class="ct">${w.t}</div><div class="ca">${w.a.split(' ').slice(-1)[0]}</div>${dot}</div>`;
+}
+function tileHTML(w) { return `<div class="tile" onclick="toast('${esc(w.t)} → eser detayı (sketch 003)')">${coverHTML(w)}<div class="meta"><b>${w.t}</b><span>${w.a}</span></div></div>`; }
+function highlight(text, q) {
+  const fq = fold(q); if (!fq) return text;
+  const ft = fold(text); const i = ft.indexOf(fq);
+  if (i < 0 || ft.length !== text.length) return text;
+  return text.slice(0, i) + '<mark>' + text.slice(i, i + fq.length) + '</mark>' + text.slice(i + fq.length);
+}
+function copyBadge(w) {
+  const formats = [...new Set(w.copies.map(c => c.f.toLowerCase()))].join(', ');
+  return w.copies.length > 1 ? `<span class="badge">✓ Sende ${w.copies.length} nüsha · ${formats}</span>` : `<span class="badge">✓ Sende var · ${formats}</span>`;
+}
+function resultRow(w, q) {
+  return `<div class="result" onclick="toast('${esc(w.t)} → eser detayı (sketch 003)')">${coverHTML(w, 'sm')}
+    <div class="info"><div class="title">${highlight(w.t, q)}</div><div class="author">${highlight(w.a, q)}${w.s ? ' · ' + w.s : ''}</div>${copyBadge(w)}</div></div>`;
+}
+function suggestHTML(near) {
+  if (!near.length) return '';
+  return `<div class="suggest">Bunu mu demek istedin?<br>${near.map(w => `<button onclick="applySuggestion(this, '${esc(w.t)}')">${w.t}</button>`).join('')}</div>`;
+}
+function verdictHTML(res, q) {
+  if (res.hits.length) {
+    const copies = res.hits.reduce((s, w) => s + w.copies.length, 0);
+    return `<div class="verdict yes"><div class="v-head"><span class="icon-circle">✓</span>Evet, sende var</div><div class="v-sub">${res.hits.length} eser, toplam ${copies} nüsha eşleşti</div></div>`;
+  }
+  if (res.near.length) {
+    return `<div class="verdict maybe"><div class="v-head"><span class="icon-circle">?</span>Emin değilim, bunlardan biri mi?</div>
+      <div class="v-sub">"${q}" birebir eşleşmedi ama çok benzeyen ${res.near.length} kitabın var. Almadan önce kontrol et.</div></div>`;
+  }
+  return `<div class="verdict no"><div class="v-head"><span class="icon-circle">✕</span>Hayır, kütüphanende yok</div>
+    <div class="v-sub">"${q}" için eşleşme bulunamadı. Gönül rahatlığıyla alabilirsin.</div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="toast('İstek listesine eklendi ♡')">♡ İstek listesine ekle</button>
+      <button class="btn btn-ghost" onclick="toast('Kitap ekleme akışı (Faz 4)')">＋ Kitap ekle</button>
+    </div></div>`;
+}
+const rows = (res, q) => `<div class="results-grid">${(res.hits.length ? res.hits : res.near).map(w => resultRow(w, q)).join('')}</div>`;
+const totalCopies = WORKS.reduce((s, w) => s + w.copies.length, 0);
+
+// ---------- Variant renderers ----------
+function renderA(q) {
+  const lib = document.getElementById('a-library'), out = document.getElementById('a-results');
+  if (!fold(q)) { lib.style.display = ''; out.style.display = 'none'; return; }
+  const res = search(q);
+  lib.style.display = 'none'; out.style.display = '';
+  out.innerHTML = res.hits.length
+    ? `<div class="a-headrow"><h2>"${q}"</h2><span class="count">${res.hits.length} eser eşleşti</span></div>` + rows(res, q)
+    : `<div class="empty-hint">"${q}" kütüphanende yok.</div>${suggestHTML(res.near)}`;
+}
+function renderB(q) {
+  const body = document.getElementById('b-body'), idle = document.getElementById('b-idle'), out = document.getElementById('b-results');
+  const on = !!fold(q);
+  body.classList.toggle('searching', on); idle.style.display = on ? 'none' : ''; out.style.display = on ? '' : 'none';
+  if (on) { const res = search(q); out.innerHTML = verdictHTML(res, q) + rows(res, q); }
+}
+function renderC(q) {
+  const out = document.getElementById('c-results');
+  if (!fold(q)) { out.innerHTML = `<div class="empty-hint">Başlık ya da yazar yaz; cevap burada belirecek.<br><br><span style="font-size:12px">Son aramalar: nutuk · darren shan · 1984</span></div>`; return; }
+  const res = search(q); out.innerHTML = verdictHTML(res, q) + rows(res, q);
+}
+const RENDER = { a: renderA, b: renderB, c: renderC };
+
+// ---------- Wiring ----------
+document.querySelectorAll('input[data-variant]').forEach(inp => {
+  const v = inp.dataset.variant, wrap = inp.closest('.search');
+  inp.addEventListener('input', () => { wrap.classList.toggle('has-value', !!inp.value); RENDER[v](inp.value); });
+  wrap.querySelector('.clear').addEventListener('click', e => { e.preventDefault(); inp.value = ''; wrap.classList.remove('has-value'); RENDER[v](''); inp.focus(); });
+});
+function openPalette() {
+  document.getElementById('c-palette').classList.add('open'); document.getElementById('c-backdrop').classList.add('open');
+  const inp = document.querySelector('input[data-variant=c]'); renderC(inp.value); setTimeout(() => inp.focus(), 60);
+}
+function closePalette() {
+  document.getElementById('c-palette').classList.remove('open'); document.getElementById('c-backdrop').classList.remove('open');
+  const inp = document.querySelector('input[data-variant=c]'); inp.value = ''; inp.closest('.search').classList.remove('has-value'); inp.blur();
+}
+function activeVariant() { return document.querySelector('.variant.active').id.slice(-1); }
+document.addEventListener('keydown', e => {
+  const typing = ['INPUT', 'SELECT'].includes(document.activeElement.tagName);
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); if (activeVariant() === 'c') openPalette(); else document.querySelector(`input[data-variant=${activeVariant()}]`).focus(); }
+  else if (e.key === '/' && !typing) { e.preventDefault(); if (activeVariant() === 'c') openPalette(); else document.querySelector(`input[data-variant=${activeVariant()}]`).focus(); }
+  else if (e.key === 'Escape' && activeVariant() === 'c') closePalette();
+});
+function applySuggestion(btn, title) { const inp = btn.closest('.variant').querySelector('input[data-variant]'); inp.value = title; inp.dispatchEvent(new Event('input')); }
+
+document.getElementById('a-grid').innerHTML = WORKS.map(tileHTML).join('');
+document.getElementById('c-grid').innerHTML = WORKS.map(tileHTML).join('');
+document.getElementById('a-count').textContent = `${WORKS.length} eser · ${totalCopies} nüsha`;
+document.getElementById('c-count').textContent = `${WORKS.length} eser · ${totalCopies} nüsha`;
+document.getElementById('c-n').textContent = WORKS.length;
+document.getElementById('b-total').textContent = WORKS.length;
+document.getElementById('b-recent').innerHTML = WORKS.slice(13, 23).map(tileHTML).join('');
+document.getElementById('b-series').innerHTML = WORKS.filter(w => w.s).map(tileHTML).join('');
+
+// =================== VARIANT D (synthesis) ===================
+// Extra real books so the shelves are complete
+[
+  { t: 'Günbatımı Avcıları', a: 'Darren Shan', copies: [{ f: 'Roman', p: 'Tudem' }] },
+  { t: 'Gecenin Müttefikleri', a: 'Darren Shan', copies: [{ f: 'Roman', p: 'Tudem' }] },
+  { t: 'Şafak Katilleri', a: 'Darren Shan', copies: [{ f: 'Roman', p: 'Tudem' }] },
+  { t: 'Ruhlar Gölü', a: 'Darren Shan', copies: [{ f: 'Roman', p: 'Tudem' }] },
+  { t: 'Gölgelerin Hükümdarı', a: 'Darren Shan', copies: [{ f: 'Roman', p: 'Tudem' }] },
+  { t: 'Arsen Lüpen: Kibar Hırsız, Oyuk İğne, Herlock Sholmes', a: 'Maurice Leblanc', copies: [{ f: 'Roman (3 cilt bir arada)', p: 'Ren' }] },
+  { t: 'Karikatürler', a: 'Yiğit Özgür', copies: [{ f: 'Karikatür', p: 'Nemesis' }] },
+  { t: 'Karikatürler 1 ve 2', a: 'Kubilay Odabaş', copies: [{ f: 'Karikatür', p: 'Komik Şeyler' }] },
+  { t: 'Ama Arkadaşlar İyidir', a: 'Cihan Kılıç', copies: [{ f: 'Karikatür', p: 'İthaki' }] },
+  { t: 'Ay Polisi', a: 'Tom Gauld', copies: [{ f: 'Grafik roman', p: 'İthaki' }] },
+  { t: 'Golyat', a: 'Tom Gauld', copies: [{ f: 'Grafik roman', p: 'İthaki' }] },
+  { t: 'Sıcak Kafa', a: 'Afşin Kum', copies: [{ f: 'Roman', p: 'April' }] },
+].forEach(w => WORKS.push(w));
+
+const SERIES = {
+  'Ucubeler Sirki': ['Darren Shan Destanı', [1]], 'Vampirin Asistanı': ['Darren Shan Destanı', [2]], 'Kan Tünelleri': ['Darren Shan Destanı', [3]],
+  'Vampirler Dağı': ['Darren Shan Destanı', [4]], 'Ölümcül Sınav': ['Darren Shan Destanı', [5]], 'Vampir Prensi': ['Darren Shan Destanı', [6]],
+  'Günbatımı Avcıları': ['Darren Shan Destanı', [7]], 'Gecenin Müttefikleri': ['Darren Shan Destanı', [8]], 'Şafak Katilleri': ['Darren Shan Destanı', [9]],
+  'Ruhlar Gölü': ['Darren Shan Destanı', [10]], 'Gölgelerin Hükümdarı': ['Darren Shan Destanı', [11]], 'Kaderin Çocukları': ['Darren Shan Destanı', [12]],
+  'Arsen Lüpen: Kibar Hırsız, Oyuk İğne, Herlock Sholmes': ['Arsen Lüpen', [1, 2, 3]],
+  'Metro 2033': ['Metro', [1, 2, 3]],
+  'Karikatürler 1 ve 2': ['Kubilay Odabaş Karikatürleri', [1, 2]],
+};
+const GENRES = {
+  'Distopya': ['1984', 'Fahrenheit 451', 'Hayvan Çiftliği', 'Otomatik Portakal', 'Metro 2033', 'Kızıl Veba'],
+  'Mizah': ['Karikatürler', 'Karikatürler 1 ve 2', 'Ama Arkadaşlar İyidir', 'Ay Polisi', 'Golyat'],
+  'Tarih & Anı': ['Nutuk', 'Gençler İçin Fotoğraflarla Nutuk', 'Maus', 'Persepolis', 'İrmina', 'Kudüs Günlükleri', 'Habibi'],
+  'Klasikler': ['Dönüşüm', 'Küçük Prens', 'Şeker Portakalı', 'Martin Eden', 'Satranç', 'Kendine Ait Bir Oda', 'Momo'],
+  'Türk Edebiyatı': ['Kuyucaklı Yusuf', 'Kinyas ve Kayra', 'Balıkçı ve Oğlu', 'Göğe Bakma Durağı', 'Kültâ – Ölüme Giden Yol', 'Sıcak Kafa'],
+  'Fantastik & Korku': ['Ucubeler Sirki', 'Vampirin Asistanı', 'Kan Tünelleri', 'Vampirler Dağı', 'Ölümcül Sınav', 'Vampir Prensi', 'Günbatımı Avcıları', 'Gecenin Müttefikleri', 'Şafak Katilleri', 'Ruhlar Gölü', 'Gölgelerin Hükümdarı', 'Kaderin Çocukları', 'Watchmen'],
+  'Polisiye': ['Arsen Lüpen: Kibar Hırsız, Oyuk İğne, Herlock Sholmes'],
+  'Felsefe & Psikoloji': ['Nietzsche Ağladığında', 'Simyacı'],
+};
+const STATUSES = ['Okudum', 'Okuyorum', 'Okuyacağım', 'Yarım bıraktım'];
+WORKS.forEach((w, i) => {
+  w.added = i;                                   // insertion order = purchase order (sketch assumption)
+  if (SERIES[w.t]) { w.ser = SERIES[w.t][0]; w.pos = SERIES[w.t][1]; }
+  w.g = Object.keys(GENRES).find(g => GENRES[g].includes(w.t)) || 'Diğer';
+  w.st = STATUSES[(w.t.length * 7 + i) % 4];
+});
+
+const RECENT_COUNT = 6;
+let dStyle = 'scroll', dViewMode = 'grid';
+
+// ---- Display unit = physical copy (each has its own cover), matching stays work-level ----
+WORKS.forEach((w, i) => w.copies.forEach((c, ci) => { c.st = STATUSES[(w.t.length * 7 + i + ci * 3) % 4]; c.added = i + ci * 0.5; }));
+const UNITS = () => WORKS.flatMap(w => w.copies.map((c, ci) => ({ w, c, ci })));
+const fmtShort = f => f.replace(/ \(.*\)/, '');
+function copyCover(u, cls = '') {
+  const [h, s, l] = hueFor(u.w.t + '|' + u.c.p + '|' + u.c.f);
+  const gn = /grafik|karikatür/i.test(u.c.f);
+  const bg = gn
+    ? `radial-gradient(circle at 70% 30%, hsl(${(h + 40) % 360} ${s + 10}% ${l + 22}%) 0 18%, transparent 19%), linear-gradient(200deg, hsl(${h} ${s + 8}% ${l + 4}%), hsl(${(h + 20) % 360} ${s}% ${l - 8}%))`
+    : `linear-gradient(160deg, hsl(${h} ${s}% ${l + 8}%), hsl(${h} ${s}% ${l - 6}%))`;
+  const tag = !cls && u.w.copies.length > 1 ? `<span class="copies-dot" style="background:rgba(255,255,255,.9);color:#111">${fmtShort(u.c.f)}</span>` : '';
+  return `<div class="cover ${cls}" style="background:${bg}"><div class="ct">${u.w.t}</div><div class="ca">${u.c.p}</div>${tag}</div>`;
+}
+function copyTile(u, extra = '') {
+  return `<div class="tile" onclick="toast('${esc(u.w.t)} (${esc(u.c.f)}, ${esc(u.c.p)}) → nüsha detayı (sketch 003)')">${copyCover(u).replace(/<\/div>$/, extra + '</div>')}
+    <div class="meta"><b>${u.w.t}</b><span>${fmtShort(u.c.f)} · ${u.c.p}</span></div></div>`;
+}
+function seriesTile(u) {
+  const label = u.w.pos.length > 1 ? `#${u.w.pos[0]}–${u.w.pos[u.w.pos.length - 1]}` : `#${u.w.pos[0]}`;
+  return copyTile(u, `<span class="pos">${label}</span>`);
+}
+function ghostTile(n, name) {
+  return `<div class="tile" onclick="toast('#${n} eksik → istek listesine ekle (Faz 6)')"><div class="cover ghost"><div class="ct" style="font-family:var(--font-sans);font-size:13px">#${n}<br><span style="font-size:11px;font-weight:500">eksik</span></div></div><div class="meta"><b>${name} #${n}</b><span>Sende yok</span></div></div>`;
+}
+function shelfHTML(kind, title, sub, tiles, moreAction) {
+  return `<section class="shelf"><div class="shelf-head"><span class="kind">${kind}</span><h3>${title}</h3><span class="count">${sub}</span>
+    <button class="more" onclick="${moreAction}">Tümünü gör →</button></div>
+    <div class="shelf-row ${dStyle === 'grid' ? 'as-grid' : ''}">${tiles.join('')}</div></section>`;
+}
+function dRenderHome() {
+  const out = [], units = UNITS();
+  const recent = [...units].sort((a, b) => b.c.added - a.c.added).slice(0, RECENT_COUNT);
+  out.push(shelfHTML('Son eklenenler', 'Son aldığın kitaplar', `son ${RECENT_COUNT}`, recent.map(u => copyTile(u)), "dGo('library','added')"));
+  const seriesNames = [...new Set(WORKS.filter(w => w.ser).map(w => w.ser))];
+  seriesNames.sort((a, b) => WORKS.filter(w => w.ser === b).length - WORKS.filter(w => w.ser === a).length);
+  for (const name of seriesNames) {
+    const books = units.filter(u => u.w.ser === name).sort((a, b) => a.w.pos[0] - b.w.pos[0]);
+    const owned = new Set(books.flatMap(u => u.w.pos)), max = Math.max(...owned);
+    const tiles = [];
+    for (let n = 1; n <= max; n++) {
+      const here = books.filter(u => u.w.pos[0] === n);
+      if (here.length) here.forEach(u => tiles.push(seriesTile(u))); else if (!owned.has(n)) tiles.push(ghostTile(n, name));
+    }
+    const missing = max - owned.size;
+    out.push(shelfHTML('Seri', name, `${owned.size} cilt${missing ? ` · ${missing} eksik` : ' · tamam ✓'}`, tiles, `toast('Seri görünümü: ${esc(name)} (Faz 6)')`));
+  }
+  const genres = Object.keys(GENRES).map(g => [g, units.filter(u => u.w.g === g)]).filter(([, l]) => l.length >= 2).sort((a, b) => b[1].length - a[1].length);
+  for (const [g, list] of genres) out.push(shelfHTML('Tür', g, `${list.length} kitap`, list.map(u => copyTile(u)), `dGo('library','added','${esc(g)}')`));
+  document.getElementById('d-shelves').innerHTML = out.join('');
+  document.getElementById('d-hello-sub').textContent = `Rafında ${units.length} kitap var (${WORKS.length} farklı eser) · ${seriesNames.length} seri · ${genres.length} tür`;
+}
+function fillSelect(id, values, label) {
+  document.getElementById(id).innerHTML = `<option value="">${label}</option>` + values.map(v => `<option>${v}</option>`).join('');
+}
+fillSelect('d-f-genre', Object.keys(GENRES), 'Tümü');
+fillSelect('d-f-format', [...new Set(UNITS().map(u => fmtShort(u.c.f)))].sort((a, b) => a.localeCompare(b, 'tr')), 'Tümü');
+fillSelect('d-f-status', STATUSES, 'Tümü');
+function dRenderLibrary() {
+  const sort = document.getElementById('d-sort').value, g = document.getElementById('d-f-genre').value,
+        f = document.getElementById('d-f-format').value, st = document.getElementById('d-f-status').value;
+  const all = UNITS();
+  const list = all.filter(u => (!g || u.w.g === g) && (!f || fmtShort(u.c.f) === f) && (!st || u.c.st === st));
+  const last = a => a.split(' ').slice(-1)[0];
+  const cmp = { added: (a, b) => b.c.added - a.c.added, title: (a, b) => a.w.t.localeCompare(b.w.t, 'tr') || a.ci - b.ci, author: (a, b) => last(a.w.a).localeCompare(last(b.w.a), 'tr') || a.w.t.localeCompare(b.w.t, 'tr') }[sort];
+  list.sort(cmp);
+  const filtered = g || f || st;
+  document.getElementById('d-reset').classList.toggle('show', !!filtered);
+  document.getElementById('d-lib-count').textContent = filtered ? `${list.length} / ${all.length} kitap` : `${all.length} kitap · ${WORKS.length} farklı eser`;
+  const el = document.getElementById('d-lib');
+  if (!list.length) { el.innerHTML = `<div class="empty-hint">Bu filtrelere uyan kitap yok.</div>`; return; }
+  const stCls = s => s === 'Okudum' ? 'read' : s === 'Okuyorum' ? 'reading' : '';
+  el.innerHTML = dViewMode === 'grid'
+    ? `<div class="grid">${list.map(u => copyTile(u)).join('')}</div>`
+    : `<div class="lib-list">${list.map(u => `<div class="result" onclick="toast('${esc(u.w.t)} (${esc(u.c.f)}) → nüsha detayı')">${copyCover(u, 'sm')}
+        <div class="info"><div class="title">${u.w.t}</div><div class="author">${u.w.a}${u.w.ser ? ' · ' + u.w.ser + ' #' + u.w.pos.join(',') : ''}</div></div>
+        <div class="cols"><span>${u.w.g}</span><span>${fmtShort(u.c.f)}</span><span>${u.c.p}</span><span class="status ${stCls(u.c.st)}">${u.c.st}</span></div></div>`).join('')}</div>`;
+}
+function dResetFilters() { ['d-f-genre', 'd-f-format', 'd-f-status'].forEach(id => document.getElementById(id).value = ''); dRenderLibrary(); }
+function dView(m) { dViewMode = m; document.getElementById('d-v-grid').classList.toggle('on', m === 'grid'); document.getElementById('d-v-list').classList.toggle('on', m === 'list'); dRenderLibrary(); }
+function dShelfStyle(s, btn) { dStyle = s; btn.parentElement.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn)); dRenderHome(); }
+function dGo(page, sort, genre) {
+  const inp = document.querySelector('input[data-variant=d]'); inp.value = ''; inp.closest('.search').classList.remove('has-value');
+  document.getElementById('d-results').style.display = 'none';
+  document.getElementById('d-home').style.display = page === 'home' ? '' : 'none';
+  document.getElementById('d-library').style.display = page === 'library' ? '' : 'none';
+  document.querySelectorAll('#d-nav button[data-page]').forEach(b => b.classList.toggle('on', b.dataset.page === page));
+  if (page === 'library') {
+    if (sort) document.getElementById('d-sort').value = sort;
+    dResetFilters();
+    if (genre) { document.getElementById('d-f-genre').value = genre; dRenderLibrary(); }
+  }
+  document.getElementById('d-scroll').scrollTop = 0;
+}
+// Search results: verdict at work level, then every owned copy as its own row with its own cover
+function copyRowsHTML(r, q) {
+  const works = r.hits.length ? r.hits : r.near;
+  return works.map(w => {
+    const units = w.copies.map((c, ci) => ({ w, c, ci }));
+    const head = units.length > 1 ? `<div class="section-label" style="margin:18px 0 6px">${highlight(w.t, q)} · ${w.a} · bu eserden ${units.length} nüshan var</div>` : '';
+    return head + `<div class="results-grid">${units.map(u => `<div class="result" onclick="toast('${esc(u.w.t)} (${esc(u.c.f)}) → nüsha detayı')">${copyCover(u, 'sm')}
+      <div class="info"><div class="title">${highlight(u.w.t, q)}</div><div class="author">${highlight(u.w.a, q)}${u.w.ser ? ' · ' + u.w.ser + ' #' + u.w.pos.join(',') : ''}</div>
+      <span class="badge">✓ ${fmtShort(u.c.f)} · ${u.c.p}</span></div></div>`).join('')}</div>`;
+  }).join('');
+}
+function renderD(q) {
+  const res = document.getElementById('d-results'), home = document.getElementById('d-home'), lib = document.getElementById('d-library');
+  if (!fold(q)) { res.style.display = 'none'; const onLib = document.querySelector('#d-nav button[data-page=library]').classList.contains('on'); home.style.display = onLib ? 'none' : ''; lib.style.display = onLib ? '' : 'none'; return; }
+  home.style.display = 'none'; lib.style.display = 'none'; res.style.display = '';
+  const r = search(q);
+  res.innerHTML = `<div style="max-width:900px">${verdictHTML(r, q)}${copyRowsHTML(r, q)}</div>`;
+}
+RENDER.d = renderD;
+dRenderHome(); dRenderLibrary();
+
+function showVariant(id, btn) {
+  document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.variant-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('variant-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+function setViewport(w) {
+  const d = document.getElementById('device');
+  d.style.setProperty('--device-w', w + 'px');
+  d.classList.toggle('phone', w < 600);
+  d.style.height = w < 600 ? '800px' : '780px';
+}
+let tt; function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 1800); }
+</script>
+</body>
+</html>

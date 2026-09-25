@@ -70,6 +70,9 @@ Ayraç ("bookmark" in Turkish) is an open-source, multi-user web app for catalog
 | Search-and-pick for new books, no barcode scanning | User preference. Keeps v1 simpler | — Pending |
 | Auth: email+password plus Google sign-in (final choice after research) | User delegated the decision. Google login is the most convenient on phones | — Pending |
 | Bilingual TR/EN from v1 | Open-source and portfolio audience plus the author's own Turkish use | — Pending |
+| Display unit is the physical **copy**, not the work: each copy is its own tile with its own cover (1984 graphic novel and 1984 novel appear as two separate books, never one tile marked "×2"). Ownership matching and the search verdict stay work-level | User: every copy has its own cover and identity, and merging them visually is wrong. The work/copy model is unchanged | — Pending |
+| Genre auto-filled from the book API (Google Books `categories` / Open Library `subjects`), editable | The home page has genre shelves, and the user's Excel mostly lacks genre | — Pending |
+| Home = shelves (last 6 added → series shelves in order with gaps → genre shelves). Header "Kütüphane" = full library with sort/filter/grid-list | Chosen in sketch 001 (A + shelves synthesis) | — Pending |
 | Visual direction chosen via `/gsd-sketch` before the first UI-heavy phase | User hasn't picked a style yet and wants to compare mockups before coding | — Pending |
 | Excel "Kitap Türü" column is mostly format, not genre | Real data shows values like Grafik Roman, Ciltli Baskı and Normal Kitap mixed with genre and notes, so import must let the user map each value | — Pending |
 
