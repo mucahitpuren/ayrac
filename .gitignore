@@ -1,0 +1,5 @@
+# Personal data (never commit)
+data/
+
+# GSD research cache
+.planning/research/.cache/
