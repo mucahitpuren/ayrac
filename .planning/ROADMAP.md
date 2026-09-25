@@ -40,7 +40,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Goal**: A user can create an account and keep a private shelf of hand-added books (one work, many copies) on a live Netlify URL, in Turkish or English, on phone or desktop.
 **Mode:** mvp
 **Depends on**: Nothing (first phase)
-**Requirements**: AUTH-01, AUTH-02, AUTH-05, AUTH-07, LIB-01, LIB-02, LIB-06, LIB-08, LIB-09, ADD-02, READ-04, UI-01, UI-02, UI-03
+**Requirements**: AUTH-01, AUTH-02, AUTH-05, AUTH-07, LIB-01, LIB-02, LIB-06, LIB-08, LIB-09, LIB-10, ADD-02, READ-04, UI-01, UI-02, UI-03
 **Success Criteria** (what must be TRUE):
   1. User can sign up with email and password, log in and log out, and is still signed in after closing and reopening the browser.
   2. User can add a book by hand (title, author(s), genre and optional series name + position for the work; format, publisher and a personal note for the copy), then see it in the library list and on its work detail page.
@@ -93,7 +93,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Goal**: A user can add a new book by searching an external catalog and picking the right result, and every book shows a real cover (fetched automatically or uploaded from the phone camera), with API keys never reaching the browser.
 **Mode:** mvp
 **Depends on**: Phase 3
-**Requirements**: ADD-01, ADD-04, COVR-01, COVR-02, COVR-03, IMP-09
+**Requirements**: ADD-01, ADD-04, ADD-05, COVR-01, COVR-02, COVR-03, IMP-09
 **Success Criteria** (what must be TRUE):
   1. User can type a title, see results from Google Books / Open Library, pick one, and confirm a form prefilled with title, author, publisher and cover. The duplicate warning still fires if the work is already owned.
   2. The shipped bundle and the browser's network traffic contain no Google Books key. Every external book search goes through the Netlify Function proxy.
@@ -109,7 +109,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Goal**: A user can browse the whole library the way they prefer, track what they've read, and see summaries of their collection.
 **Mode:** mvp
 **Depends on**: Phase 4
-**Requirements**: LIB-03, LIB-04, LIB-05, LIB-07, READ-01, READ-02, READ-03, STAT-01, STAT-02, STAT-03, STAT-04
+**Requirements**: LIB-03, LIB-04, LIB-05, LIB-07, LIB-11, READ-01, READ-02, READ-03, STAT-01, STAT-02, STAT-03, STAT-04
 **Success Criteria** (what must be TRUE):
   1. User can switch the library between a cover grid and a list, sort it by title, author or date added, and filter it by format, genre and reading status.
   2. Tapping an author's name opens an author page listing every work by that author in the library.
@@ -122,7 +122,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Goal**: A user can keep a wishlist of books to buy, separate from what they own, and see each series in order with missing volumes clearly visible.
 **Mode:** mvp
 **Depends on**: Phase 5
-**Requirements**: WISH-01, WISH-02, WISH-03, WISH-04, SER-01, SER-02, SER-03
+**Requirements**: WISH-01, WISH-02, WISH-03, WISH-04, SER-01, SER-02, SER-03, LIB-12
 **Success Criteria** (what must be TRUE):
   1. User can add a book to the wishlist via API search or manual entry, and view the wishlist on its own screen. Wishlist books never show up as owned in the library, search results or statistics.
   2. One tap on a wishlist book ("I bought it") moves it into the library as an owned copy. User can also remove a book from the wishlist.

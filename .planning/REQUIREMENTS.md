@@ -19,7 +19,7 @@ Requirements for the initial release. Each one maps to a roadmap phase.
 
 ### Library
 
-- [ ] **LIB-01**: A work stores title, author(s), genre and an optional series name + position. A copy stores format (e.g. novel, graphic novel, hardcover), publisher, cover and optional volume coverage
+- [ ] **LIB-01**: A work stores title, author(s), genre and an optional series name + position. A copy stores format (e.g. novel, graphic novel, hardcover), publisher, cover, optional volume coverage and an optional edition title that can differ from the work title (e.g. "Gençler İçin Fotoğraflarla Nutuk" under the work "Nutuk")
 - [ ] **LIB-02**: User can own multiple copies of one work (e.g. 1984 novel + graphic novel; Nutuk ×3)
 - [ ] **LIB-03**: User can browse the library as a cover grid or a list and switch between them
 - [ ] **LIB-04**: User can sort the library by title, author or date added
@@ -28,6 +28,9 @@ Requirements for the initial release. Each one maps to a roadmap phase.
 - [ ] **LIB-07**: User can open an author page listing every work by that author in their library
 - [ ] **LIB-08**: User can edit work and copy details
 - [ ] **LIB-09**: User can delete a copy or a work after confirming
+- [ ] **LIB-10**: Every owned copy is shown as its own book with its own cover in the library, shelves and search results. Copies of the same work are never merged into one tile (e.g. no "1984 ×2")
+- [ ] **LIB-11**: The home page shows shelves: the last 6 added copies, then one shelf per genre (largest first), each with "see all" opening the filtered library. The header "Library" link opens the full sortable/filterable library
+- [ ] **LIB-12**: The home page also shows one shelf per series, with books in position order and missing volumes shown as placeholders
 
 ### Search
 
@@ -43,6 +46,7 @@ Requirements for the initial release. Each one maps to a roadmap phase.
 - [ ] **ADD-02**: User can add a book manually when the API has no match
 - [ ] **ADD-03**: When adding a work that already exists in the library, user is warned and can choose "add as new copy" or cancel
 - [ ] **ADD-04**: External API keys are never exposed to the browser (calls go through a server-side proxy)
+- [ ] **ADD-05**: Genre is auto-filled from the book API (Google Books `categories` / Open Library `subjects`), mapped to the app's genre list and editable. This includes books imported from Excel, which are enriched in the same background pass as covers
 
 ### Covers
 
@@ -157,6 +161,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LIB-07 | Phase 5 | Pending |
 | LIB-08 | Phase 1 | Pending |
 | LIB-09 | Phase 1 | Pending |
+| LIB-10 | Phase 1 | Pending |
+| LIB-11 | Phase 5 | Pending |
+| LIB-12 | Phase 6 | Pending |
 | SRCH-01 | Phase 2 | Pending |
 | SRCH-02 | Phase 2 | Pending |
 | SRCH-03 | Phase 2 | Pending |
@@ -166,6 +173,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ADD-02 | Phase 1 | Pending |
 | ADD-03 | Phase 2 | Pending |
 | ADD-04 | Phase 4 | Pending |
+| ADD-05 | Phase 4 | Pending |
 | COVR-01 | Phase 4 | Pending |
 | COVR-02 | Phase 4 | Pending |
 | COVR-03 | Phase 4 | Pending |
@@ -203,10 +211,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | OPS-03 | Phase 7 | Pending |
 
 **Coverage:**
-- v1 requirements: 60 total
-- Mapped to phases: 60
+- v1 requirements: 64 total
+- Mapped to phases: 64
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-25*
-*Last updated: 2026-09-25 after roadmap creation (traceability filled)*
+*Last updated: 2026-09-25 after sketches 001–003 (added LIB-10, LIB-11, LIB-12, ADD-05; LIB-01 gains edition title)*

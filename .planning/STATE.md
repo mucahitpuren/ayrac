@@ -23,7 +23,7 @@ See: .planning/PROJECT.md (updated 2026-09-25)
 Phase: 1 of 7 (Private Shelf (Walking Skeleton))
 Plan: 0 of TBD in current phase
 Status: Ready to plan (run `/gsd-sketch` first to pick the visual direction)
-Last activity: 2026-09-25 — Roadmap created (7 phases, 60/60 v1 requirements mapped)
+Last activity: 2026-09-25 — Sketches 001–003 done (visual direction chosen); requirements now 64/64 mapped
 
 Progress: [░░░░░░░░░░] 0%
 
