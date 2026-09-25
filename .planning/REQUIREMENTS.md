@@ -141,13 +141,72 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (filled by roadmapper) | | |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+| AUTH-03 | Phase 7 | Pending |
+| AUTH-04 | Phase 7 | Pending |
+| AUTH-05 | Phase 1 | Pending |
+| AUTH-06 | Phase 7 | Pending |
+| AUTH-07 | Phase 1 | Pending |
+| LIB-01 | Phase 1 | Pending |
+| LIB-02 | Phase 1 | Pending |
+| LIB-03 | Phase 5 | Pending |
+| LIB-04 | Phase 5 | Pending |
+| LIB-05 | Phase 5 | Pending |
+| LIB-06 | Phase 1 | Pending |
+| LIB-07 | Phase 5 | Pending |
+| LIB-08 | Phase 1 | Pending |
+| LIB-09 | Phase 1 | Pending |
+| SRCH-01 | Phase 2 | Pending |
+| SRCH-02 | Phase 2 | Pending |
+| SRCH-03 | Phase 2 | Pending |
+| SRCH-04 | Phase 2 | Pending |
+| SRCH-05 | Phase 2 | Pending |
+| ADD-01 | Phase 4 | Pending |
+| ADD-02 | Phase 1 | Pending |
+| ADD-03 | Phase 2 | Pending |
+| ADD-04 | Phase 4 | Pending |
+| COVR-01 | Phase 4 | Pending |
+| COVR-02 | Phase 4 | Pending |
+| COVR-03 | Phase 4 | Pending |
+| IMP-01 | Phase 3 | Pending |
+| IMP-02 | Phase 3 | Pending |
+| IMP-03 | Phase 3 | Pending |
+| IMP-04 | Phase 3 | Pending |
+| IMP-05 | Phase 3 | Pending |
+| IMP-06 | Phase 3 | Pending |
+| IMP-07 | Phase 3 | Pending |
+| IMP-08 | Phase 3 | Pending |
+| IMP-09 | Phase 4 | Pending |
+| READ-01 | Phase 5 | Pending |
+| READ-02 | Phase 5 | Pending |
+| READ-03 | Phase 5 | Pending |
+| READ-04 | Phase 1 | Pending |
+| WISH-01 | Phase 6 | Pending |
+| WISH-02 | Phase 6 | Pending |
+| WISH-03 | Phase 6 | Pending |
+| WISH-04 | Phase 6 | Pending |
+| SER-01 | Phase 6 | Pending |
+| SER-02 | Phase 6 | Pending |
+| SER-03 | Phase 6 | Pending |
+| STAT-01 | Phase 5 | Pending |
+| STAT-02 | Phase 5 | Pending |
+| STAT-03 | Phase 5 | Pending |
+| STAT-04 | Phase 5 | Pending |
+| EXP-01 | Phase 7 | Pending |
+| EXP-02 | Phase 7 | Pending |
+| UI-01 | Phase 1 | Pending |
+| UI-02 | Phase 1 | Pending |
+| UI-03 | Phase 1 | Pending |
+| OPS-01 | Phase 7 | Pending |
+| OPS-02 | Phase 7 | Pending |
+| OPS-03 | Phase 7 | Pending |
 
 **Coverage:**
 - v1 requirements: 60 total
-- Mapped to phases: 0
-- Unmapped: 60 ⚠️
+- Mapped to phases: 60
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-25*
-*Last updated: 2026-09-25 after initial definition*
+*Last updated: 2026-09-25 after roadmap creation (traceability filled)*
