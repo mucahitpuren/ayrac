@@ -781,14 +781,14 @@ SUPABASE_SERVICE_ROLE_KEY=your-dev-service-role-key
 
 **If this table is empty:** N/A — see entries above. All other claims in this document are either `[VERIFIED: npm registry]` (package versions, checked live this session) or `[CITED: ...]` (fetched/cross-checked against official docs or 2+ independent sources this session).
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Exact Supabase Postgres major version on new free-tier projects in 2026**
+1. **Exact Supabase Postgres major version on new free-tier projects in 2026** — RESOLVED (planning, 01-04): non-blocking; the executor records the dashboard-reported version in the header comment of `supabase/migrations/20260926120000_init_schema.sql`, and the trigger/functions use only syntax valid on Postgres 13–17.
    - What we know: Supabase has run Postgres 15+ for some time; the trigger syntax in Code Examples is standard PL/pgSQL that has worked unchanged across Postgres 13–17.
    - What's unclear: The exact version assigned to a newly created free-tier project today was not queried this session (would require actually creating the `dev` project, a manual step — see below).
    - Recommendation: Non-blocking. Confirm the version shown in the Supabase dashboard once the `dev` project is created (Manual Setup Steps), and note it in the migration file's header comment for future reference.
 
-2. **Whether Netlify Deploy Previews should point at `dev` or `prod` Supabase project (CONTEXT.md discretion item)**
+2. **Whether Netlify Deploy Previews should point at `dev` or `prod` Supabase project (CONTEXT.md discretion item)** — RESOLVED (planning, 01-07): Deploy Previews and Branch deploys → `dev`, Production → `prod`, via Netlify per-context env vars (Claude's discretion per CONTEXT.md).
    - What we know: This session's research recommends Deploy Previews → `dev` (keeps unreviewed preview builds away from the author's real library) via Netlify's per-context env var scoping (Pattern 7).
    - What's unclear: Whether the user has a preference for previews to show real prod data during review (unlikely given D-13's "prod = author's real library" framing, but not explicitly ruled out in CONTEXT.md).
    - Recommendation: Default to Deploy Previews → `dev`; flag as a one-line confirmation during planning rather than blocking on it.
