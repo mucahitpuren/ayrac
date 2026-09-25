@@ -23,4 +23,4 @@ Calm frame, showcase covers. The interface itself should feel quiet and unhurrie
 |---|------|----------------|--------|------|
 | 001 | home-search | Where does "do I own this?" search live on a phone, and how is the answer shown? | ★ Synthesis: A top-bar search + home shelves (recent 6 → series → genres) + full library page, one tile per copy, verdict card | layout, search, core-value |
 | 002 | theme-typography | Which palette + Google Fonts pairing (light + dark) makes covers feel like a calm showcase? | ★ A2: warm paper palette (light + dark) + Fraunces display + DM Sans body + Phosphor regular icons | theme, palette, typography, dark-mode |
-| 003 | work-detail-copies | How does one work with several copies look, and does cover-tinted colour feel right? | — | detail, copies, color |
+| 003 | copy-detail | What does one copy's page look like, and how are the other copies of the work shown? | ★ A: cover-tinted hero (darkening gradient), reading + note cards, sibling copy cards with current highlighted + add-copy card | detail, copies, color, reading |
