@@ -1,0 +1,43 @@
+/* Ayraç — B "Gece vitrini": deep dark showcase + Plus Jakarta Sans */
+:root {
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --display-weight: 800;
+  --display-tracking: -0.025em;
+  --body-size: 15px;
+
+  --color-bg: #0e0e10;
+  --color-surface: #18181b;
+  --color-surface-2: #232327;
+  --color-border: #2c2c31;
+  --color-text: #f4f4f5;
+  --color-text-muted: #9a9aa2;
+  --color-primary: #7cc4a4;
+  --color-primary-hover: #95d4b7;
+  --color-primary-soft: #1d2d27;
+  --color-accent: #e3b366;
+  --color-success: #5fd08f;
+  --color-success-soft: #173024;
+
+  --radius-md: 12px; --radius-lg: 18px; --radius-cover: 4px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.45);
+  --shadow-cover: 0 1px 1px rgba(0,0,0,0.5), 0 10px 24px rgba(0,0,0,0.65);
+}
+:root[data-mode="light"] {
+  --color-bg: #f5f5f6;
+  --color-surface: #ffffff;
+  --color-surface-2: #ececef;
+  --color-border: #e1e1e6;
+  --color-text: #111113;
+  --color-text-muted: #6a6a73;
+  --color-primary: #1f7a57;
+  --color-primary-hover: #17664a;
+  --color-primary-soft: #dcf0e7;
+  --color-accent: #b7832a;
+  --color-success: #1f8a50;
+  --color-success-soft: #dff3e7;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-cover: 0 1px 1px rgba(0,0,0,0.08), 0 8px 18px rgba(0,0,0,0.16);
+}

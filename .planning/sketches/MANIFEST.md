@@ -9,6 +9,7 @@ Calm frame, showcase covers. The interface itself should feel quiet and unhurrie
 - Apple Books: shelf grid, cover shadows, calm light/dark surfaces
 - Spotify / Apple Music: large artwork, cover-derived accent colours, dark theme
 - Target stack: React + Tailwind v4 + shadcn/ui (at least one variant per sketch follows shadcn defaults)
+- Icons: Phosphor Icons (user preference) → `@phosphor-icons/react` in the app
 
 ## Real-Data Notes (from data/kitaplar.xlsx)
 - 91 rows. Several multi-copy works: 1984 (graphic novel + regular), Nutuk (caricature, hardcover, plus the photo edition "Gençler İçin Fotoğraflarla Nutuk"), Şeker Portakalı, Dönüşüm, Fahrenheit 451
@@ -21,5 +22,5 @@ Calm frame, showcase covers. The interface itself should feel quiet and unhurrie
 | # | Name | Design Question | Winner | Tags |
 |---|------|----------------|--------|------|
 | 001 | home-search | Where does "do I own this?" search live on a phone, and how is the answer shown? | ★ Synthesis: A top-bar search + home shelves (recent 6 → series → genres) + full library page, one tile per copy, verdict card | layout, search, core-value |
-| 002 | theme-library-grid | Which surface makes covers feel like a showcase: warm paper, deep dark, or neutral shelf? | — | theme, palette, grid |
+| 002 | theme-typography | Which palette + Google Fonts pairing (light + dark) makes covers feel like a calm showcase? | ★ A2: warm paper palette (light + dark) + Fraunces display + DM Sans body + Phosphor regular icons | theme, palette, typography, dark-mode |
 | 003 | work-detail-copies | How does one work with several copies look, and does cover-tinted colour feel right? | — | detail, copies, color |
