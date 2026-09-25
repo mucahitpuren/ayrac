@@ -70,6 +70,8 @@ Ayraç ("bookmark" in Turkish) is an open-source, multi-user web app for catalog
 | Search-and-pick for new books, no barcode scanning | User preference. Keeps v1 simpler | — Pending |
 | Auth: email+password plus Google sign-in (final choice after research) | User delegated the decision. Google login is the most convenient on phones | — Pending |
 | Bilingual TR/EN from v1 | Open-source and portfolio audience plus the author's own Turkish use | — Pending |
+| Visual direction chosen via `/gsd-sketch` before the first UI-heavy phase | User hasn't picked a style yet and wants to compare mockups before coding | — Pending |
+| Excel "Kitap Türü" column is mostly format, not genre | Real data shows values like Grafik Roman, Ciltli Baskı and Normal Kitap mixed with genre and notes, so import must let the user map each value | — Pending |
 
 ## Evolution
 
