@@ -1,0 +1,10 @@
+{
+  "common": {
+    "appName": "Ayraç",
+    "loading": "Loading…",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "retry": "Try again",
+    "notFound": "We couldn't find that page.",
+    "backToLibrary": "Back to my library"
+  }
+}

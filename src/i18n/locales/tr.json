@@ -1,0 +1,10 @@
+{
+  "common": {
+    "appName": "Ayraç",
+    "loading": "Yükleniyor…",
+    "errorGeneric": "Bir şeyler ters gitti. Lütfen tekrar dene.",
+    "retry": "Tekrar dene",
+    "notFound": "Aradığın sayfa bulunamadı.",
+    "backToLibrary": "Kütüphaneme dön"
+  }
+}
