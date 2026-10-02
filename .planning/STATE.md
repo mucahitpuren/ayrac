@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Private Shelf (Walking Skeleton)
 status: executing
-stopped_at: Phase 1 context gathered
-last_updated: "2026-10-02T09:37:07.599Z"
+stopped_at: Completed 01-01-PLAN.md
+last_updated: "2026-10-02T09:54:06.829Z"
 last_activity: 2026-10-02
 last_activity_desc: Phase 01 execution started
-state_head: a0aab6a66745e678721a553458651e1a281c1a62
+state_head: 304ae28499c434ea4a12f1a0e5cae9cefdcdda63
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 11
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -28,8 +28,8 @@ See: .planning/PROJECT.md (updated 2026-09-25)
 ## Current Position
 
 Phase: 01 (Private Shelf (Walking Skeleton)) — EXECUTING
-Plan: 1 of 11
-Status: Executing Phase 01
+Plan: 2 of 11
+Status: Ready to execute
 Last activity: 2026-10-02 — Phase 01 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -54,6 +54,11 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: -
 
 *Updated after each plan completion*
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 01 P01 | 16 min | 3 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -67,6 +72,8 @@ Recent decisions affecting current work:
 - [Roadmap]: Password reset and Google sign-in move to Phase 7, since both depend on production redirect URLs and email deliverability on the custom domain.
 - [Roadmap]: The copy-level note field arrives in Phase 1 (READ-04), so Phase 3 import can map "Kitap Türü" values into it.
 - [Roadmap]: Standing gates: two-account RLS isolation test (extended per new table/bucket), Turkish folding tests (from Phase 2), no secrets in repo.
+- [Phase 01]: Language rule: stored ayrac-lng (tr/en) wins, else first navigator language tr/en, else English; persisted only via explicit setLanguage (detector caches: []) — UI-01: browser default must stay a default; inline boot script mirrors resolveLanguage
+- [Phase 01]: vitest@5.0.2 installed with --legacy-peer-deps due to npm 10.9.0 arborist crash on optional peer cycle — Same exact version; default npm ci verified working; revisit on npm upgrade
 
 ### Pending Todos
 
@@ -89,6 +96,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-25T19:15:19.263Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-private-shelf-walking-skeleton/01-CONTEXT.md
+Last session: 2026-10-02T09:54:06.794Z
+Stopped at: Completed 01-01-PLAN.md
+Resume file: None
