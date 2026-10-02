@@ -7,6 +7,7 @@ import { useAuth } from '@/features/auth/AuthProvider'
 import { AddCopyPage } from '@/features/book/AddCopyPage'
 import { AddBookPage } from '@/features/book/AddBookPage'
 import { CopyDetailPage } from '@/features/book/CopyDetailPage'
+import { EditBookPage } from '@/features/book/EditBookPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 
 // Shown while the stored session is being restored, so neither the login page nor an empty shell flashes.
@@ -60,6 +61,7 @@ const router = createBrowserRouter([
       { path: '/', element: <LibraryPage /> },
       { path: '/kitap/yeni', element: <AddBookPage /> },
       { path: '/kitap/:copyId', element: <CopyDetailPage /> },
+      { path: '/kitap/:copyId/duzenle', element: <EditBookPage /> },
       { path: '/eser/:workId/nusha-ekle', element: <AddCopyPage /> },
     ],
   },

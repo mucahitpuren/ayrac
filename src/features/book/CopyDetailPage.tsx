@@ -1,3 +1,4 @@
+import { PencilSimple } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -69,6 +70,15 @@ export function CopyDetailPage() {
     <main>
       <CopyHero detail={data} />
       <div className={CONTENT_CLASS}>
+        <div className="-mb-2 flex flex-wrap items-center gap-2">
+          <Button asChild variant="ghost">
+            <Link to={`/kitap/${data.id}/duzenle`}>
+              <PencilSimple aria-hidden size={20} />
+              {t('book.actions.edit')}
+            </Link>
+          </Button>
+          {/* Slot for the delete-copy action. */}
+        </div>
         <NoteCard key={data.id} copyId={data.id} initialNote={data.note} />
         <SiblingsSection detail={data} />
       </div>

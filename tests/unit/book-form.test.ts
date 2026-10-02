@@ -2,11 +2,15 @@ import { describe, expect, it } from 'vitest'
 import {
   bookFormSchema,
   codePointLength,
+  fromCopyDetail,
   normalizeText,
   parseAuthors,
   toCreateWorkWithCopyInput,
+  toUpdateCopyInput,
+  toUpdateWorkInput,
   type BookFormValues,
 } from '@/features/book/book-form'
+import type { CopyDetail } from '@/features/library/queries'
 
 const valid: BookFormValues = {
   title: 'Nutuk',
@@ -142,5 +146,50 @@ describe('toCreateWorkWithCopyInput', () => {
     expect(input.publisher).toBe('Can Yayınları')
     expect(input.editionTitle).toBe('Gençler İçin Nutuk')
     expect(input.note).toBe('notum')
+  })
+})
+
+const detail: CopyDetail = {
+  id: 'c1',
+  work_id: 'w1',
+  format: 'graphic_novel',
+  publisher: null,
+  edition_title: null,
+  note: null,
+  created_at: '2026-10-02T10:00:00Z',
+  work: { id: 'w1', title: '1984', authors: ['George Orwell', 'Fromm'], genre: 'novel', series: null, series_position: null },
+  siblings: [],
+}
+
+describe('fromCopyDetail', () => {
+  it('renders NULL optional fields as genuinely empty strings, never a dash', () => {
+    const values = fromCopyDetail(detail)
+    expect(values).toMatchObject({ publisher: '', editionTitle: '', note: '', series: '', seriesPosition: '' })
+  })
+
+  it('joins authors and stringifies the series position', () => {
+    const values = fromCopyDetail({
+      ...detail,
+      work: { ...detail.work, series: 'Seri', series_position: 3 },
+    })
+    expect(values.authorsRaw).toBe('George Orwell, Fromm')
+    expect(values.seriesPosition).toBe('3')
+  })
+
+  it('leaves genre unset when the stored genre is NULL so one must be chosen before saving', () => {
+    const values = fromCopyDetail({ ...detail, work: { ...detail.work, genre: null } })
+    expect(values.genre).toBeUndefined()
+  })
+
+  it('round-trips through the update inputs: cleared optional fields go back to NULL', () => {
+    const values = { ...valid, ...fromCopyDetail(detail) } as BookFormValues
+    expect(toUpdateCopyInput(values)).toEqual({ format: 'graphic_novel', publisher: null, editionTitle: null, note: null })
+    expect(toUpdateWorkInput(values)).toEqual({
+      title: '1984',
+      authors: ['George Orwell', 'Fromm'],
+      genre: 'novel',
+      series: null,
+      seriesPosition: null,
+    })
   })
 })

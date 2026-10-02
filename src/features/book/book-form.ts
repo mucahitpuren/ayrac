@@ -1,8 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Resolver } from 'react-hook-form'
 import { z } from 'zod'
-import type { NewCopyForWork, NewWorkWithCopy } from '@/features/library/queries'
-import { FORMAT_SLUGS, GENRE_SLUGS } from '@/lib/vocab'
+import type {
+  CopyDetail,
+  NewCopyForWork,
+  NewWorkWithCopy,
+  UpdateCopyInput,
+  UpdateWorkInput,
+} from '@/features/library/queries'
+import { FORMAT_SLUGS, GENRE_SLUGS, isFormatSlug, isGenreSlug } from '@/lib/vocab'
 
 // Limits mirror the database CHECK constraints. Postgres char_length counts code points, so the client
 // counts code points too (never UTF-16 units, which would disagree for emoji and other astral characters).
@@ -108,7 +114,9 @@ export const bookFormSchema = z.object({ ...workShape, ...copyShape }).superRefi
 
 export type BookFormValues = z.input<typeof bookFormSchema>
 
-export function toCreateWorkWithCopyInput(values: BookFormValues): NewWorkWithCopy {
+// The work and copy halves share one normalization for the add and the edit paths: NFC + trim, '' -> NULL,
+// authors parsed from the single field, position dropped without a series.
+export function toUpdateWorkInput(values: BookFormValues): UpdateWorkInput {
   const series = emptyToNull(values.series)
   const position = seriesPositionOf(values.series, values.seriesPosition)
   return {
@@ -117,10 +125,36 @@ export function toCreateWorkWithCopyInput(values: BookFormValues): NewWorkWithCo
     genre: values.genre,
     series,
     seriesPosition: series !== null && position !== null && !Number.isNaN(position) ? position : null,
+  }
+}
+
+export function toUpdateCopyInput(values: BookFormValues): UpdateCopyInput {
+  return {
     format: values.format,
     publisher: emptyToNull(values.publisher),
     editionTitle: emptyToNull(values.editionTitle),
     note: emptyToNull(values.note),
+  }
+}
+
+export function toCreateWorkWithCopyInput(values: BookFormValues): NewWorkWithCopy {
+  return { ...toUpdateWorkInput(values), ...toUpdateCopyInput(values) }
+}
+
+// LIB-08: DB NULLs become '' so optional fields render genuinely empty (never a dash). genre and format are
+// left unset when the stored value is NULL or unknown, so the user has to pick one before saving.
+export function fromCopyDetail(detail: CopyDetail): Partial<BookFormValues> {
+  const { work } = detail
+  return {
+    title: work.title,
+    authorsRaw: work.authors.join(', '),
+    ...(isGenreSlug(work.genre) ? { genre: work.genre } : {}),
+    series: work.series ?? '',
+    seriesPosition: work.series_position === null ? '' : String(work.series_position),
+    ...(isFormatSlug(detail.format) ? { format: detail.format } : {}),
+    publisher: detail.publisher ?? '',
+    editionTitle: detail.edition_title ?? '',
+    note: detail.note ?? '',
   }
 }
 

@@ -197,3 +197,51 @@ export async function invalidateCopyQueries(queryClient: QueryClient): Promise<v
     [libraryKeys.all, copyKeys.all, workKeys.all].map((queryKey) => queryClient.invalidateQueries({ queryKey })),
   )
 }
+
+export type UpdateWorkInput = {
+  title: string
+  authors: string[]
+  genre: string | null
+  series: string | null
+  seriesPosition: number | null
+}
+
+export type UpdateCopyInput = {
+  format: string
+  publisher: string | null
+  editionTitle: string | null
+  note: string | null
+}
+
+// LIB-08: every column the form edits is sent, so re-submitting the same values is idempotent. Neither id nor
+// user_id is ever part of the payload. Zero updated rows means the row is gone or not ours (RLS).
+export async function updateWork(client: AppSupabaseClient, workId: string, input: UpdateWorkInput): Promise<void> {
+  const { data, error } = await client
+    .from('works')
+    .update({
+      title: input.title,
+      authors: input.authors,
+      genre: input.genre,
+      series: input.series,
+      series_position: input.seriesPosition,
+    })
+    .eq('id', workId)
+    .select('id')
+  if (error) throw error
+  if (data.length === 0) throw new Error('work not found')
+}
+
+export async function updateCopy(client: AppSupabaseClient, copyId: string, input: UpdateCopyInput): Promise<void> {
+  const { data, error } = await client
+    .from('copies')
+    .update({
+      format: input.format,
+      publisher: input.publisher,
+      edition_title: input.editionTitle,
+      note: input.note,
+    })
+    .eq('id', copyId)
+    .select('id')
+  if (error) throw error
+  if (data.length === 0) throw new Error('copy not found')
+}

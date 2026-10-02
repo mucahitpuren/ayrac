@@ -95,6 +95,13 @@
       "suggestion_other": "{{title}} — {{authors}} · {{count}} copies",
       "clear": "Choose another work",
       "listLabel": "Matching works in your library"
+    },
+    "edit": {
+      "title": "Edit book",
+      "submit": "Save changes"
+    },
+    "actions": {
+      "edit": "Edit book"
     }
   },
   "format": {

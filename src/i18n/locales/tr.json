@@ -95,6 +95,13 @@
       "suggestion_other": "{{title}} — {{authors}} · {{count}} nüsha",
       "clear": "Başka eser seç",
       "listLabel": "Kütüphanendeki eşleşen eserler"
+    },
+    "edit": {
+      "title": "Kitabı düzenle",
+      "submit": "Değişiklikleri kaydet"
+    },
+    "actions": {
+      "edit": "Kitabı düzenle"
     }
   },
   "format": {
