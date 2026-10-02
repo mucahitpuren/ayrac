@@ -23,6 +23,13 @@
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    # The Supabase session lives in localStorage, so a CSP is the defence-in-depth layer against injected script.
+    # script-src allows only same-origin files plus the pre-paint boot script inline in index.html, pinned by its
+    # sha256. EDITING THAT INLINE SCRIPT CHANGES THE HASH: update the sha256 below (tests/unit/csp.test.ts
+    # recomputes it and fails on a mismatch). style-src needs 'unsafe-inline' for the style attributes and the
+    # <style> element that Radix and sonner emit at runtime. Fonts are bundled, so font-src stays on the origin.
+    # img-src allows any https host so remote covers (Open Library, Google Books) work without a header change.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-ngb8aZ0eeqBdxhDlSPC4PRtWOVG3t5y+J6LdnO21tH8='; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
 
 [[headers]]
   for = "/assets/*"
