@@ -1,6 +1,7 @@
 import { CircleNotch } from '@phosphor-icons/react'
 import { createBrowserRouter, Link, Navigate, Outlet, RouterProvider } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { AppShell } from '@/app/AppShell'
 import { AuthPage } from '@/features/auth/AuthPage'
 import { useAuth } from '@/features/auth/AuthProvider'
 import { LibraryPage } from '@/features/library/LibraryPage'
@@ -20,7 +21,7 @@ function RequireAuth() {
   const { status } = useAuth()
   if (status === 'loading') return <SessionLoading />
   if (status === 'signedOut') return <Navigate to="/login" replace />
-  return <Outlet />
+  return <AppShell />
 }
 
 function PublicOnly() {

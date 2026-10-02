@@ -46,5 +46,19 @@
     "pocket": "Cep Boy",
     "special_edition": "Özel Baskı",
     "other": "Diğer"
+  },
+  "language": {
+    "label": "Dil",
+    "tr": "Türkçe",
+    "en": "English"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Açık",
+    "dark": "Koyu",
+    "system": "Sistem"
+  },
+  "shell": {
+    "brandHome": "Kütüphaneme git"
   }
 }

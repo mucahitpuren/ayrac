@@ -46,5 +46,19 @@
     "pocket": "Pocket size",
     "special_edition": "Special edition",
     "other": "Other"
+  },
+  "language": {
+    "label": "Language",
+    "tr": "Türkçe",
+    "en": "English"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "shell": {
+    "brandHome": "Go to my library"
   }
 }

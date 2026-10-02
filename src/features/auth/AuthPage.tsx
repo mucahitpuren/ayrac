@@ -4,6 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
+import { LanguageMenu } from '@/components/language-menu'
+import { ThemeMenu } from '@/components/theme-menu'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -93,7 +95,11 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
   const passwordError = errors.password?.message
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center gap-6 px-5 py-10">
+    <main className="relative flex min-h-dvh flex-col items-center justify-center gap-6 px-5 py-10">
+      <div className="absolute top-3 right-3 flex items-center gap-1 sm:top-4 sm:right-6">
+        <LanguageMenu />
+        <ThemeMenu />
+      </div>
       <p className="font-display text-[26px] leading-none">{t('common.appName')}</p>
       <Card className="w-full max-w-[420px]">
         <CardHeader>
