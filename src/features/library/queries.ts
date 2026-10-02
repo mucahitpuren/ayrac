@@ -43,15 +43,24 @@ const LIBRARY_SELECT =
   'id, work_id, user_id, format, publisher, edition_title, volume_coverage, cover_url, note, created_at, updated_at, ' +
   'work:works!inner(id, title, authors, genre, series, series_position)'
 
+// PostgREST answers at most `max_rows` rows (supabase/config.toml, 1000) and truncates silently beyond that.
+export const LIBRARY_PAGE_SIZE = 1000
+
 // LIB-10: one row per copy, never per work. Newest first; id breaks ties so equal timestamps keep a stable order.
-export async function fetchLibrary(client: AppSupabaseClient): Promise<LibraryCopy[]> {
-  const { data, error } = await client
-    .from('copies')
-    .select(LIBRARY_SELECT)
-    .order('created_at', { ascending: false })
-    .order('id', { ascending: false })
-  if (error) throw error
-  return data as unknown as LibraryCopy[]
+// The whole library is read page by page: a shelf past the server row cap must never be cut off without a sign.
+export async function fetchLibrary(client: AppSupabaseClient, pageSize = LIBRARY_PAGE_SIZE): Promise<LibraryCopy[]> {
+  const rows: LibraryCopy[] = []
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await client
+      .from('copies')
+      .select(LIBRARY_SELECT)
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: false })
+      .range(from, from + pageSize - 1)
+    if (error) throw error
+    rows.push(...(data as unknown as LibraryCopy[]))
+    if (data.length < pageSize) return rows
+  }
 }
 
 // The generated RPC argument types do not model SQL NULL (every argument is typed as non-null), but
