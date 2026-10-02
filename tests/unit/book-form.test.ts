@@ -6,6 +6,7 @@ import {
   normalizeText,
   parseAuthors,
   toCreateWorkWithCopyInput,
+  toEditCopyInput,
   toUpdateCopyInput,
   toUpdateWorkInput,
   type BookFormValues,
@@ -190,6 +191,25 @@ describe('fromCopyDetail', () => {
       genre: 'novel',
       series: null,
       seriesPosition: null,
+    })
+  })
+
+  describe('toEditCopyInput (WR-04)', () => {
+    it('leaves the note out when it was not changed, so a stale pre-fill cannot overwrite a newer note', () => {
+      const values = { ...valid, note: 'old note' }
+      expect(toEditCopyInput(values, 'old note')).toEqual({ format: 'standard', publisher: null, editionTitle: null })
+      expect('note' in toEditCopyInput(values, 'old note')).toBe(false)
+    })
+
+    it('treats an empty form note and a NULL stored note as unchanged', () => {
+      expect('note' in toEditCopyInput({ ...valid, note: '' }, null)).toBe(false)
+      expect('note' in toEditCopyInput({ ...valid, note: '   ' }, null)).toBe(false)
+    })
+
+    it('sends the new note when the user changed it, and NULL when the user cleared it', () => {
+      expect(toEditCopyInput({ ...valid, note: 'new' }, 'old').note).toBe('new')
+      expect(toEditCopyInput({ ...valid, note: '' }, 'old').note).toBeNull()
+      expect(toEditCopyInput({ ...valid, note: 'first' }, null).note).toBe('first')
     })
   })
 })

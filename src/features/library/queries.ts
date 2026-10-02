@@ -222,8 +222,13 @@ export type UpdateCopyInput = {
   note: string | null
 }
 
-// LIB-08: every column the form edits is sent, so re-submitting the same values is idempotent. Neither id nor
-// user_id is ever part of the payload. Zero updated rows means the row is gone or not ours (RLS).
+// An edit sends `note` only when the user changed it. The note is also saved by its own autosave on the detail
+// page, so writing an untouched (possibly stale) form value back would overwrite a newer note.
+export type UpdateCopyPatch = Omit<UpdateCopyInput, 'note'> & { note?: string | null }
+
+// LIB-08: every column the form edits is sent (the note only when it was changed, see UpdateCopyPatch), so
+// re-submitting the same values is idempotent. Neither id nor user_id is ever part of the payload. Zero updated
+// rows means the row is gone or not ours (RLS).
 export async function updateWork(client: AppSupabaseClient, workId: string, input: UpdateWorkInput): Promise<void> {
   const { data, error } = await client
     .from('works')
@@ -240,14 +245,14 @@ export async function updateWork(client: AppSupabaseClient, workId: string, inpu
   if (data.length === 0) throw new Error('work not found')
 }
 
-export async function updateCopy(client: AppSupabaseClient, copyId: string, input: UpdateCopyInput): Promise<void> {
+export async function updateCopy(client: AppSupabaseClient, copyId: string, input: UpdateCopyPatch): Promise<void> {
   const { data, error } = await client
     .from('copies')
     .update({
       format: input.format,
       publisher: input.publisher,
       edition_title: input.editionTitle,
-      note: input.note,
+      ...(input.note !== undefined ? { note: input.note } : {}),
     })
     .eq('id', copyId)
     .select('id')

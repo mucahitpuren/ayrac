@@ -19,7 +19,7 @@ import {
 import { supabase } from '@/lib/supabase'
 import { CopyFields, WorkFields } from './BookFormFields'
 import { DeleteWorkDialog } from './DeleteWorkDialog'
-import { bookFormSchema, fromCopyDetail, toUpdateCopyInput, toUpdateWorkInput, type BookFormValues } from './book-form'
+import { bookFormSchema, fromCopyDetail, toEditCopyInput, toUpdateWorkInput, type BookFormValues } from './book-form'
 
 const PAGE_CLASS = 'mx-auto w-full max-w-[1240px] px-5 py-8 sm:px-8'
 
@@ -88,7 +88,7 @@ function EditBookForm({ detail }: { detail: CopyDetail }) {
   const mutation = useMutation({
     mutationFn: async (values: BookFormValues) => {
       await updateWork(supabase, detail.work_id, toUpdateWorkInput(values))
-      await updateCopy(supabase, detail.id, toUpdateCopyInput(values))
+      await updateCopy(supabase, detail.id, toEditCopyInput(values, detail.note))
     },
     onSuccess: async () => {
       await invalidateCopyQueries(queryClient)

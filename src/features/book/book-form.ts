@@ -6,6 +6,7 @@ import type {
   NewCopyForWork,
   NewWorkWithCopy,
   UpdateCopyInput,
+  UpdateCopyPatch,
   UpdateWorkInput,
 } from '@/features/library/queries'
 import { FORMAT_SLUGS, GENRE_SLUGS, isFormatSlug, isGenreSlug } from '@/lib/vocab'
@@ -135,6 +136,13 @@ export function toUpdateCopyInput(values: BookFormValues): UpdateCopyInput {
     editionTitle: emptyToNull(values.editionTitle),
     note: emptyToNull(values.note),
   }
+}
+
+// WR-04: the edit form leaves the note out unless the user changed it, so a note saved meanwhile by the detail
+// page's autosave is never overwritten by the (possibly stale) value the form was pre-filled with.
+export function toEditCopyInput(values: BookFormValues, initialNote: string | null): UpdateCopyPatch {
+  const { note, ...rest } = toUpdateCopyInput(values)
+  return note === emptyToNull(initialNote) ? rest : { ...rest, note }
 }
 
 export function toCreateWorkWithCopyInput(values: BookFormValues): NewWorkWithCopy {
