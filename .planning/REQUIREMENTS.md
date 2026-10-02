@@ -15,7 +15,7 @@ Requirements for the initial release. Each one maps to a roadmap phase.
 - [ ] **AUTH-04**: User can sign in with Google
 - [x] **AUTH-05**: User session persists across browser restarts
 - [ ] **AUTH-06**: User can delete their account and all of their data
-- [ ] **AUTH-07**: User can only ever see and change their own data (verified with a two-account isolation test on every table and storage bucket)
+- [x] **AUTH-07**: User can only ever see and change their own data (verified with a two-account isolation test on every table and storage bucket)
 
 ### Library
 
@@ -151,7 +151,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-04 | Phase 7 | Pending |
 | AUTH-05 | Phase 1 | Complete |
 | AUTH-06 | Phase 7 | Pending |
-| AUTH-07 | Phase 1 | Pending |
+| AUTH-07 | Phase 1 | Complete |
 | LIB-01 | Phase 1 | Pending |
 | LIB-02 | Phase 1 | Pending |
 | LIB-03 | Phase 5 | Pending |
