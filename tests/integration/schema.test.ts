@@ -259,6 +259,52 @@ describe('LIB-01 / LIB-02 schema', () => {
       if (exact.data) await user.client.from('copies').delete().eq('id', exact.data.id)
     })
 
+    // Added by migration 20261002120000_harden_text_constraints: these fail until it is pushed to the dev project.
+    describe('authors, cover_url and volume_coverage limits (WR-07)', () => {
+      const insertWork = (authors: unknown) =>
+        user.client.from('works').insert({ title: 'Limits', authors } as never).select('id')
+      const insertCopy = (extra: Record<string, unknown>) =>
+        user.client
+          .from('copies')
+          .insert({ work_id: orwellWorkId, user_id: user.userId, format: 'other', ...extra } as never)
+          .select('id')
+
+      it.each([[[null]], [['']], [['   ']], [['x'.repeat(201)]], [['Fine Author', '']]])(
+        'rejects authors %j',
+        async (authors) => {
+          expect((await insertWork(authors)).error?.code).toBe(CHECK_VIOLATION)
+        },
+      )
+
+      it('accepts an empty list and a 200-character author', async () => {
+        for (const authors of [[], ['x'.repeat(200)]]) {
+          const { data, error } = await insertWork(authors)
+          expect(error).toBeNull()
+          if (data?.[0]) await user.client.from('works').delete().eq('id', data[0].id)
+        }
+      })
+
+      it.each([['javascript:alert(1)'], ['http://covers.example/a.jpg'], ['https://exa mple.com/a.jpg'], [`https://x.test/${'a'.repeat(2048)}`]])(
+        'rejects cover_url %s',
+        async (coverUrl) => {
+          expect((await insertCopy({ cover_url: coverUrl })).error?.code).toBe(CHECK_VIOLATION)
+        },
+      )
+
+      it('accepts an https cover_url', async () => {
+        const { data, error } = await insertCopy({ cover_url: 'https://covers.openlibrary.org/b/id/1-L.jpg' })
+        expect(error).toBeNull()
+        if (data?.[0]) await user.client.from('copies').delete().eq('id', data[0].id)
+      })
+
+      it.each([[[]], [[0]], [[-1]], [[1, null]], [Array.from({ length: 51 }, (_, i) => i + 1)]])(
+        'rejects volume_coverage %j',
+        async (volumes) => {
+          expect((await insertCopy({ volume_coverage: volumes })).error?.code).toBe(CHECK_VIOLATION)
+        },
+      )
+    })
+
     it('left no partial rows behind', async () => {
       const works = await user.client.from('works').select('title')
       const titles = (works.data ?? []).map((row) => row.title).sort()
