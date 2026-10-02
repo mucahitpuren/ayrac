@@ -24,11 +24,11 @@ Requirements for the initial release. Each one maps to a roadmap phase.
 - [ ] **LIB-03**: User can browse the library as a cover grid or a list and switch between them
 - [ ] **LIB-04**: User can sort the library by title, author or date added
 - [ ] **LIB-05**: User can filter the library by format, genre and reading status
-- [ ] **LIB-06**: User can open a work detail page showing every owned copy of that work
+- [x] **LIB-06**: User can open a work detail page showing every owned copy of that work
 - [ ] **LIB-07**: User can open an author page listing every work by that author in their library
 - [ ] **LIB-08**: User can edit work and copy details
 - [ ] **LIB-09**: User can delete a copy or a work after confirming
-- [ ] **LIB-10**: Every owned copy is shown as its own book with its own cover in the library, shelves and search results. Copies of the same work are never merged into one tile (e.g. no "1984 ×2")
+- [x] **LIB-10**: Every owned copy is shown as its own book with its own cover in the library, shelves and search results. Copies of the same work are never merged into one tile (e.g. no "1984 ×2")
 - [ ] **LIB-11**: The home page shows shelves: the last 6 added copies, then one shelf per genre (largest first), each with "see all" opening the filtered library. The header "Library" link opens the full sortable/filterable library
 - [ ] **LIB-12**: The home page also shows one shelf per series, with books in position order and missing volumes shown as placeholders
 
@@ -71,7 +71,7 @@ Requirements for the initial release. Each one maps to a roadmap phase.
 - [ ] **READ-01**: User can set a reading status per copy: to-read / reading / read / abandoned
 - [ ] **READ-02**: Marking a copy as read records a finish date, which user can edit
 - [ ] **READ-03**: User can rate a book from 1 to 5
-- [ ] **READ-04**: User can add a personal note to a book
+- [x] **READ-04**: User can add a personal note to a book
 
 ### Wishlist
 
@@ -157,11 +157,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LIB-03 | Phase 5 | Pending |
 | LIB-04 | Phase 5 | Pending |
 | LIB-05 | Phase 5 | Pending |
-| LIB-06 | Phase 1 | Pending |
+| LIB-06 | Phase 1 | Complete |
 | LIB-07 | Phase 5 | Pending |
 | LIB-08 | Phase 1 | Pending |
 | LIB-09 | Phase 1 | Pending |
-| LIB-10 | Phase 1 | Pending |
+| LIB-10 | Phase 1 | Complete |
 | LIB-11 | Phase 5 | Pending |
 | LIB-12 | Phase 6 | Pending |
 | SRCH-01 | Phase 2 | Pending |
@@ -189,7 +189,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | READ-01 | Phase 5 | Pending |
 | READ-02 | Phase 5 | Pending |
 | READ-03 | Phase 5 | Pending |
-| READ-04 | Phase 1 | Pending |
+| READ-04 | Phase 1 | Complete |
 | WISH-01 | Phase 6 | Pending |
 | WISH-02 | Phase 6 | Pending |
 | WISH-03 | Phase 6 | Pending |
