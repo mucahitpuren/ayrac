@@ -19,7 +19,7 @@ Requirements for the initial release. Each one maps to a roadmap phase.
 
 ### Library
 
-- [ ] **LIB-01**: A work stores title, author(s), genre and an optional series name + position. A copy stores format (e.g. novel, graphic novel, hardcover), publisher, cover, optional volume coverage and an optional edition title that can differ from the work title (e.g. "Gençler İçin Fotoğraflarla Nutuk" under the work "Nutuk")
+- [x] **LIB-01**: A work stores title, author(s), genre and an optional series name + position. A copy stores format (e.g. novel, graphic novel, hardcover), publisher, cover, optional volume coverage and an optional edition title that can differ from the work title (e.g. "Gençler İçin Fotoğraflarla Nutuk" under the work "Nutuk")
 - [ ] **LIB-02**: User can own multiple copies of one work (e.g. 1984 novel + graphic novel; Nutuk ×3)
 - [ ] **LIB-03**: User can browse the library as a cover grid or a list and switch between them
 - [ ] **LIB-04**: User can sort the library by title, author or date added
@@ -152,7 +152,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-05 | Phase 1 | Complete |
 | AUTH-06 | Phase 7 | Pending |
 | AUTH-07 | Phase 1 | Complete |
-| LIB-01 | Phase 1 | Pending |
+| LIB-01 | Phase 1 | Complete |
 | LIB-02 | Phase 1 | Pending |
 | LIB-03 | Phase 5 | Pending |
 | LIB-04 | Phase 5 | Pending |

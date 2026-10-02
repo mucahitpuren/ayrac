@@ -51,7 +51,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. A second test account sees none of the first account's works or copies and cannot read or change them through the Supabase API. The automated two-account isolation test passes for every table.
   5. The deployed Netlify app switches between Turkish and English (browser language by default, choice remembered) and light/dark theme (system setting by default), and every screen is comfortable one-handed on a phone and also works on desktop.
 
-**Plans:** 7/11 plans executed
+**Plans:** 8/11 plans executed
 
 Plans:
 **Wave 1**
@@ -75,7 +75,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 01-08-PLAN.md — Add a book by hand (work + first copy, D-02/D-03 vocabularies, atomic save)
+- [x] 01-08-PLAN.md — Add a book by hand (work + first copy, D-02/D-03 vocabularies, atomic save)
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
@@ -220,7 +220,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Private Shelf (Walking Skeleton) | 7/11 | In Progress|  |
+| 1. Private Shelf (Walking Skeleton) | 8/11 | In Progress|  |
 | 2. "Do I Already Own This?" Search | 0/TBD | Not started | - |
 | 3. Excel/CSV Import with Preview | 0/TBD | Not started | - |
 | 4. Search-and-Pick Add & Covers | 0/TBD | Not started | - |
