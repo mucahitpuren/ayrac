@@ -69,7 +69,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     explicitSignOut.current = true
     try {
-      await supabase.auth.signOut()
+      const { error } = await supabase.auth.signOut()
+      // signOut() returns the error instead of throwing. When the server revoke fails (offline), the local session
+      // is kept, so end it on this device anyway: the user asked to log out.
+      if (error) await supabase.auth.signOut({ scope: 'local' })
     } finally {
       explicitSignOut.current = false
       queryClient.clear()
