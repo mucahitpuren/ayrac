@@ -101,7 +101,20 @@
       "submit": "Değişiklikleri kaydet"
     },
     "actions": {
-      "edit": "Kitabı düzenle"
+      "edit": "Kitabı düzenle",
+      "deleteCopy": "Nüshayı sil",
+      "deleteWork": "Eseri ve nüshalarını sil"
+    },
+    "delete": {
+      "copyTitle": "Bu nüshayı sil?",
+      "copyBodyRemaining_one": "{{copy}} nüshasını silmek üzeresin. Bu eserin {{count}} nüshası daha kalacak. Bu işlem geri alınamaz.",
+      "copyBodyRemaining_other": "{{copy}} nüshasını silmek üzeresin. Bu eserin {{count}} nüshası daha kalacak. Bu işlem geri alınamaz.",
+      "copyBodyLast": "{{copy}} nüshasını silmek üzeresin. Bu, eserin son nüshası; eser de silinecek. Bu işlem geri alınamaz.",
+      "workTitle": "Bu eseri sil?",
+      "workBody_one": "\"{{title}}\" eserini ve {{count}} nüshasını silmek üzeresin. Bu işlem geri alınamaz.",
+      "workBody_other": "\"{{title}}\" eserini ve {{count}} nüshasını silmek üzeresin. Bu işlem geri alınamaz.",
+      "confirm": "Evet, sil",
+      "failed": "Silinemedi, tekrar dene."
     }
   },
   "format": {

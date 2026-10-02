@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Trash } from '@phosphor-icons/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -17,6 +18,7 @@ import {
 } from '@/features/library/queries'
 import { supabase } from '@/lib/supabase'
 import { CopyFields, WorkFields } from './BookFormFields'
+import { DeleteWorkDialog } from './DeleteWorkDialog'
 import { bookFormSchema, fromCopyDetail, toUpdateCopyInput, toUpdateWorkInput, type BookFormValues } from './book-form'
 
 const PAGE_CLASS = 'mx-auto w-full max-w-[1240px] px-5 py-8 sm:px-8'
@@ -73,6 +75,7 @@ function EditBookForm({ detail }: { detail: CopyDetail }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const [deleteWorkOpen, setDeleteWorkOpen] = useState(false)
 
   const form = useForm<BookFormValues>({
     resolver: zodResolver(bookFormSchema),
@@ -121,7 +124,23 @@ function EditBookForm({ detail }: { detail: CopyDetail }) {
             </Button>
           </div>
         </form>
-        {/* Danger zone slot: the delete-work entry is added below the form. */}
+        <div className="flex flex-col items-start gap-3 border-t border-border pt-6">
+          <Button
+            type="button"
+            variant="ghost"
+            className="text-destructive hover:bg-destructive/10"
+            onClick={() => setDeleteWorkOpen(true)}
+          >
+            <Trash aria-hidden size={20} />
+            {t('book.actions.deleteWork')}
+          </Button>
+        </div>
+        <DeleteWorkDialog
+          work={detail.work}
+          copyCount={detail.siblings.length}
+          open={deleteWorkOpen}
+          onOpenChange={setDeleteWorkOpen}
+        />
       </Card>
     </main>
   )

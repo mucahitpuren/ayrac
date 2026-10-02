@@ -245,3 +245,30 @@ export async function updateCopy(client: AppSupabaseClient, copyId: string, inpu
   if (error) throw error
   if (data.length === 0) throw new Error('copy not found')
 }
+
+export type DeleteCopyResult = { copyDeleted: boolean; workDeleted: boolean; workId: string | null }
+
+// LIB-09: one database function deletes the copy and, when it was the work's last copy, the work, in one
+// transaction. copyDeleted=false means the copy was already gone (e.g. deleted in another tab): not an error.
+export async function deleteCopy(client: AppSupabaseClient, copyId: string): Promise<DeleteCopyResult> {
+  const { data, error } = await client.rpc('delete_copy', { p_copy_id: copyId }).single()
+  if (error) throw error
+  return { copyDeleted: data.copy_deleted, workDeleted: data.work_deleted, workId: data.parent_work_id ?? null }
+}
+
+// LIB-09: copies go with their work (ON DELETE CASCADE). Zero rows (already gone) is not an error.
+export async function deleteWork(client: AppSupabaseClient, workId: string): Promise<void> {
+  const { error } = await client.from('works').delete().eq('id', workId)
+  if (error) throw error
+}
+
+// After a delete the library is stale, and so is every cached copy page and work header. The copy/work
+// queries are only marked stale (no refetch): the page that is still mounted shows the row that was just
+// deleted, and refetching it would flash a not-found screen before the redirect lands.
+export async function invalidateAfterDelete(queryClient: QueryClient): Promise<void> {
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: libraryKeys.all }),
+    queryClient.invalidateQueries({ queryKey: copyKeys.all, refetchType: 'none' }),
+    queryClient.invalidateQueries({ queryKey: workKeys.all, refetchType: 'none' }),
+  ])
+}

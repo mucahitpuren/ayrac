@@ -101,7 +101,20 @@
       "submit": "Save changes"
     },
     "actions": {
-      "edit": "Edit book"
+      "edit": "Edit book",
+      "deleteCopy": "Delete copy",
+      "deleteWork": "Delete work and all copies"
+    },
+    "delete": {
+      "copyTitle": "Delete this copy?",
+      "copyBodyRemaining_one": "You're about to delete the {{copy}} copy. {{count}} more copy of this work will remain. This can't be undone.",
+      "copyBodyRemaining_other": "You're about to delete the {{copy}} copy. {{count}} more copies of this work will remain. This can't be undone.",
+      "copyBodyLast": "You're about to delete the {{copy}} copy. This is the work's last copy, so the work will be deleted too. This can't be undone.",
+      "workTitle": "Delete this work?",
+      "workBody_one": "You're about to delete \"{{title}}\" and its {{count}} copy. This can't be undone.",
+      "workBody_other": "You're about to delete \"{{title}}\" and its {{count}} copies. This can't be undone.",
+      "confirm": "Yes, delete",
+      "failed": "Couldn't delete, try again."
     }
   },
   "format": {

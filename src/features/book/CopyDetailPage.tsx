@@ -1,12 +1,14 @@
-import { PencilSimple } from '@phosphor-icons/react'
+import { useState } from 'react'
+import { PencilSimple, Trash } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { copyKeys, fetchCopyDetail } from '@/features/library/queries'
+import { copyKeys, fetchCopyDetail, type CopyDetail } from '@/features/library/queries'
 import { supabase } from '@/lib/supabase'
 import { CopyHero } from './CopyHero'
+import { DeleteCopyDialog } from './DeleteCopyDialog'
 import { NoteCard } from './NoteCard'
 import { SiblingsSection } from './SiblingsSection'
 
@@ -25,6 +27,32 @@ function DetailSkeleton() {
           <Skeleton className="h-52 w-full rounded-lg" />
         </div>
       </div>
+    </div>
+  )
+}
+
+// Action row under the hero (no "change cover": covers arrive in Phase 4).
+function CopyActions({ detail }: { detail: CopyDetail }) {
+  const { t } = useTranslation()
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  return (
+    <div className="-mb-2 flex flex-wrap items-center gap-2">
+      <Button asChild variant="ghost">
+        <Link to={`/kitap/${detail.id}/duzenle`}>
+          <PencilSimple aria-hidden size={20} />
+          {t('book.actions.edit')}
+        </Link>
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        className="text-destructive hover:bg-destructive/10"
+        onClick={() => setDeleteOpen(true)}
+      >
+        <Trash aria-hidden size={20} />
+        {t('book.actions.deleteCopy')}
+      </Button>
+      <DeleteCopyDialog detail={detail} open={deleteOpen} onOpenChange={setDeleteOpen} />
     </div>
   )
 }
@@ -70,15 +98,7 @@ export function CopyDetailPage() {
     <main>
       <CopyHero detail={data} />
       <div className={CONTENT_CLASS}>
-        <div className="-mb-2 flex flex-wrap items-center gap-2">
-          <Button asChild variant="ghost">
-            <Link to={`/kitap/${data.id}/duzenle`}>
-              <PencilSimple aria-hidden size={20} />
-              {t('book.actions.edit')}
-            </Link>
-          </Button>
-          {/* Slot for the delete-copy action. */}
-        </div>
+        <CopyActions key={data.id} detail={data} />
         <NoteCard key={data.id} copyId={data.id} initialNote={data.note} />
         <SiblingsSection detail={data} />
       </div>
