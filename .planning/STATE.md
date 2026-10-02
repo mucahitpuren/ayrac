@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Private Shelf (Walking Skeleton)
 status: executing
-stopped_at: Completed 01-04-PLAN.md
-last_updated: "2026-10-02T10:41:06.595Z"
+stopped_at: Completed 01-05-PLAN.md
+last_updated: "2026-10-02T10:48:30.210Z"
 last_activity: 2026-10-02
 last_activity_desc: Phase 01 execution started
-state_head: bec996ee48a8e8e15db15d3ee01983efba10bb55
+state_head: fcaca0769a5e05d0914035a4ae20eae9a8198b6c
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 11
-  completed_plans: 4
+  completed_plans: 5
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-25)
 ## Current Position
 
 Phase: 01 (Private Shelf (Walking Skeleton)) — EXECUTING
-Plan: 5 of 11
+Plan: 6 of 11
 Status: Ready to execute
 Last activity: 2026-10-02 — Phase 01 execution started
 
@@ -62,6 +62,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P03 | 8 min | 3 tasks | 15 files |
 | Phase 01 P02 | 4 min | 3 tasks | 9 files |
 | Phase 01 P04 | 5 min | 2 tasks | 11 files |
+| Phase 01 P05 | 5 min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,7 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-02: integration harness requires SUPABASE_PROD_PROJECT_REF and refuses URLs containing it; CLI linked to dev only, prod link deferred to 01-07 — D-12 / prohibition P2
 - [Phase 01]: 01-04: format and genre slug lists confirmed unchanged by the user and written into CHECK constraints (one-way door) — Matches Excel Kitap Türü values for Phase 3; labels live only in i18n catalogs
 - [Phase 01]: 01-04: query cache cleared whenever the signed-in account changes or ends — Prevents a second user on the same tab seeing the first user's cached library rows (client-side leak RLS cannot stop)
+- [Phase 01]: 01-05: language/theme menus are radio dropdowns; SIGNED_OUT always clears the query cache and an explicit-sign-out ref separates logout from session expiry — Shows the active choice without custom markers; prevents cross-account cache residue and silent expiry
 
 ### Pending Todos
 
@@ -104,6 +106,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-02T10:41:06.558Z
-Stopped at: Completed 01-04-PLAN.md
+Last session: 2026-10-02T10:48:30.173Z
+Stopped at: Completed 01-05-PLAN.md
 Resume file: None
