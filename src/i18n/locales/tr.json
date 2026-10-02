@@ -68,6 +68,14 @@
       "editionTitle": "Bu nüshanın başlığı",
       "editionTitleHelper": "Farklıysa, bu nüshaya özel başlık",
       "note": "Not"
+    },
+    "detail": {
+      "kickerSingle": "Tek nüsha",
+      "kickerMany_one": "Bu eserden {{count}} nüshan var",
+      "kickerMany_other": "Bu eserden {{count}} nüshan var",
+      "siblingsTitle": "Bu eserin nüshaların",
+      "current": "Şu an bakıyorsun",
+      "series": "{{series}} #{{position}}"
     }
   },
   "format": {

@@ -68,6 +68,14 @@
       "editionTitle": "Edition title",
       "editionTitleHelper": "If different, this copy's own title",
       "note": "Note"
+    },
+    "detail": {
+      "kickerSingle": "Only copy",
+      "kickerMany_one": "You own {{count}} copy of this work",
+      "kickerMany_other": "You own {{count}} copies of this work",
+      "siblingsTitle": "Copies of this work",
+      "current": "You're viewing this",
+      "series": "{{series}} #{{position}}"
     }
   },
   "format": {

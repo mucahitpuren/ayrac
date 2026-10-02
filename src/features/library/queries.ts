@@ -80,3 +80,65 @@ export async function createWorkWithCopy(
   if (error) throw error
   return { workId: data.new_work_id, copyId: data.new_copy_id }
 }
+
+export const copyKeys = { detail: (id: string) => ['copy', id] as const }
+
+export type CopySibling = Pick<Tables<'copies'>, 'id' | 'format' | 'publisher' | 'edition_title' | 'created_at'>
+
+export type CopyDetail = Pick<
+  Tables<'copies'>,
+  'id' | 'work_id' | 'format' | 'publisher' | 'edition_title' | 'note' | 'created_at'
+> & {
+  work: Pick<Tables<'works'>, 'id' | 'title' | 'authors' | 'genre' | 'series' | 'series_position'>
+  // Every copy of the same work (including this one), oldest first, id as the tie-break.
+  siblings: CopySibling[]
+}
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+export function isUuid(value: string): boolean {
+  return UUID_PATTERN.test(value)
+}
+
+const COPY_DETAIL_SELECT =
+  'id, work_id, format, publisher, edition_title, note, created_at, ' +
+  'work:works!inner(id, title, authors, genre, series, series_position, ' +
+  'siblings:copies(id, format, publisher, edition_title, created_at))'
+
+type CopyDetailRow = Omit<CopyDetail, 'siblings' | 'work'> & {
+  work: CopyDetail['work'] & { siblings: CopySibling[] }
+}
+
+// Timestamps are compared as instants (Postgres trims trailing fraction zeros, so string order is unreliable).
+function compareSiblings(a: CopySibling, b: CopySibling): number {
+  return Date.parse(a.created_at) - Date.parse(b.created_at) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
+}
+
+// LIB-06: null (not an error) when the id is malformed or the row is not visible to the signed-in user, so
+// RLS and a bad URL both end in the same not-found screen. A malformed id never reaches the server.
+export async function fetchCopyDetail(client: AppSupabaseClient, copyId: string): Promise<CopyDetail | null> {
+  if (!isUuid(copyId)) return null
+  const { data, error } = await client.from('copies').select(COPY_DETAIL_SELECT).eq('id', copyId).maybeSingle()
+  if (error) throw error
+  if (!data) return null
+  const row = data as unknown as CopyDetailRow
+  const { siblings, ...work } = row.work
+  return {
+    id: row.id,
+    work_id: row.work_id,
+    format: row.format,
+    publisher: row.publisher,
+    edition_title: row.edition_title,
+    note: row.note,
+    created_at: row.created_at,
+    work,
+    siblings: [...siblings].sort(compareSiblings),
+  }
+}
+
+// READ-04: a blank note is stored as NULL by the caller. Zero updated rows means the copy is gone or not ours.
+export async function updateCopyNote(client: AppSupabaseClient, copyId: string, note: string | null): Promise<void> {
+  const { data, error } = await client.from('copies').update({ note }).eq('id', copyId).select('id')
+  if (error) throw error
+  if (data.length === 0) throw new Error('copy not found')
+}

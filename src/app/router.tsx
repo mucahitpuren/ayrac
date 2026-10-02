@@ -5,6 +5,7 @@ import { AppShell } from '@/app/AppShell'
 import { AuthPage } from '@/features/auth/AuthPage'
 import { useAuth } from '@/features/auth/AuthProvider'
 import { AddBookPage } from '@/features/book/AddBookPage'
+import { CopyDetailPage } from '@/features/book/CopyDetailPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 
 // Shown while the stored session is being restored, so neither the login page nor an empty shell flashes.
@@ -57,6 +58,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <LibraryPage /> },
       { path: '/kitap/yeni', element: <AddBookPage /> },
+      { path: '/kitap/:copyId', element: <CopyDetailPage /> },
     ],
   },
   { path: '*', element: <NotFound /> },

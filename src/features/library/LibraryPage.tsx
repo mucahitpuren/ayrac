@@ -22,7 +22,10 @@ function CopyTile({ copy, hasSiblings }: { copy: LibraryCopy; hasSiblings: boole
 
   return (
     <li className="min-w-0">
-      <div className="transition-transform duration-150 hover:-translate-y-1">
+      <Link
+        to={`/kitap/${copy.id}`}
+        className="block rounded-sm outline-none transition-transform duration-150 hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
         <BookCover size="tile" formatTag={hasSiblings ? formatLabel : undefined} />
         <p className="mt-2 line-clamp-2 font-display text-base leading-tight [overflow-wrap:anywhere]">
           {copy.edition_title ?? copy.work.title}
@@ -33,7 +36,7 @@ function CopyTile({ copy, hasSiblings }: { copy: LibraryCopy; hasSiblings: boole
           </p>
         ) : null}
         <p className="mt-1 truncate text-[13px] leading-[1.3] text-muted-foreground">{meta}</p>
-      </div>
+      </Link>
     </li>
   )
 }
