@@ -20,7 +20,9 @@
       "invalidCredentials": "E-posta ya da şifre hatalı.",
       "emailExists": "Bu e-posta zaten kayıtlı.",
       "passwordTooShort": "Şifre en az 8 karakter olmalı."
-    }
+    },
+    "logout": "Çıkış yap",
+    "sessionExpired": "Oturumun sona erdi, tekrar giriş yap."
   },
   "form": {
     "errors": {
@@ -59,6 +61,7 @@
     "system": "Sistem"
   },
   "shell": {
-    "brandHome": "Kütüphaneme git"
+    "brandHome": "Kütüphaneme git",
+    "account": "Hesap"
   }
 }

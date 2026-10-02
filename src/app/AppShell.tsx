@@ -1,5 +1,6 @@
 import { Link, Outlet } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { AccountMenu } from '@/components/account-menu'
 import { LanguageMenu } from '@/components/language-menu'
 import { ThemeMenu } from '@/components/theme-menu'
 
@@ -21,6 +22,7 @@ export function AppShell() {
           <div className="flex items-center gap-1">
             <LanguageMenu />
             <ThemeMenu />
+            <AccountMenu />
           </div>
         </div>
       </header>

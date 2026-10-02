@@ -20,7 +20,9 @@
       "invalidCredentials": "Incorrect email or password.",
       "emailExists": "This email is already registered.",
       "passwordTooShort": "Password must be at least 8 characters."
-    }
+    },
+    "logout": "Log out",
+    "sessionExpired": "Your session expired — please log in again."
   },
   "form": {
     "errors": {
@@ -59,6 +61,7 @@
     "system": "System"
   },
   "shell": {
-    "brandHome": "Go to my library"
+    "brandHome": "Go to my library",
+    "account": "Account"
   }
 }
