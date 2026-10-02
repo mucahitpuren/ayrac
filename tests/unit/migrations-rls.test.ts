@@ -109,6 +109,10 @@ describe('the gate can fail (synthetic migrations)', () => {
     expect(() => rpcFunctions(sql)).toThrow(/cannot parse/i)
   })
 
+  it('accepts create table if not exists in the public schema', () => {
+    expect(schemaTables('create table if not exists public."notes" (id int);')).toEqual(['notes'])
+  })
+
   it('fails loudly on a table outside the public schema', () => {
     expect(() => schemaTables('create table private.secrets (id int);')).toThrow(/public/i)
   })
@@ -130,7 +134,7 @@ describe('AUTH-07 hardening of every migrated table and function', () => {
     expect(security.anonRevoked, `${table}: not revoked from anon`).toBe(true)
   })
 
-  it.each(functions.map((fn) => fn.name))('function %s: SECURITY INVOKER, search_path pinned, no anon/public execute', (name) => {
+  it.each(functions.map((fn) => fn.name))('function %s: INVOKER, search_path set, no anon/public execute', (name) => {
     const fn = functions.find((candidate) => candidate.name === name)
     expect(fn?.securityInvoker, `${name}: not SECURITY INVOKER`).toBe(true)
     expect(fn?.searchPathSet, `${name}: search_path not set`).toBe(true)
