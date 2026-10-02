@@ -26,6 +26,16 @@ export default defineConfig(
     extends: [reactRefresh.configs.vite],
   },
   {
+    // shadcn convention: the Button file also exports its cva variants (reused by link-styled anchors).
+    files: ['src/components/ui/button.tsx'],
+    rules: {
+      'react-refresh/only-export-components': [
+        'error',
+        { allowConstantExport: true, allowExportNames: ['buttonVariants'] },
+      ],
+    },
+  },
+  {
     files: ['tests/**/*.ts', 'vite.config.ts', 'scripts/**/*.{js,ts}', 'eslint.config.js'],
     languageOptions: { globals: globals.node },
   },
