@@ -1,16 +1,23 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { useTranslation } from 'react-i18next'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AppRouter } from '@/app/router'
+import { Toaster } from '@/components/ui/sonner'
+import { AuthProvider } from '@/features/auth/AuthProvider'
 import './i18n'
 import './index.css'
 
-function Boot() {
-  const { t } = useTranslation()
-  return <h1>{t('common.appName')}</h1>
-}
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: 30_000, retry: 1 } },
+})
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Boot />
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
+      <Toaster />
+    </QueryClientProvider>
   </StrictMode>,
 )

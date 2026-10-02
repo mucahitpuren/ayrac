@@ -6,5 +6,45 @@
     "retry": "Try again",
     "notFound": "We couldn't find that page.",
     "backToLibrary": "Back to my library"
+  },
+  "auth": {
+    "title": "Welcome to Ayraç",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 8 characters",
+    "signup": "Sign up",
+    "login": "Log in",
+    "toSignup": "Don't have an account? Sign up",
+    "toLogin": "Already have an account? Log in",
+    "errors": {
+      "invalidCredentials": "Incorrect email or password.",
+      "emailExists": "This email is already registered.",
+      "passwordTooShort": "Password must be at least 8 characters."
+    }
+  },
+  "form": {
+    "errors": {
+      "required": "This field is required.",
+      "invalidEmail": "Enter a valid email address."
+    }
+  },
+  "library": {
+    "title": "My library",
+    "countBooks_one": "{{count}} book",
+    "countBooks_other": "{{count}} books",
+    "countWorks_one": "{{count}} work",
+    "countWorks_other": "{{count}} works",
+    "empty": {
+      "title": "No books yet",
+      "body": "Start filling your shelf — add your first book by hand."
+    }
+  },
+  "format": {
+    "standard": "Standard edition",
+    "graphic_novel": "Graphic novel",
+    "hardcover": "Hardcover",
+    "pocket": "Pocket size",
+    "special_edition": "Special edition",
+    "other": "Other"
   }
 }

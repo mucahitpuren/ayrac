@@ -6,5 +6,45 @@
     "retry": "Tekrar dene",
     "notFound": "Aradığın sayfa bulunamadı.",
     "backToLibrary": "Kütüphaneme dön"
+  },
+  "auth": {
+    "title": "Ayraç'a hoş geldin",
+    "email": "E-posta",
+    "password": "Şifre",
+    "passwordHint": "En az 8 karakter",
+    "signup": "Kayıt ol",
+    "login": "Giriş yap",
+    "toSignup": "Hesabın yok mu? Kayıt ol",
+    "toLogin": "Zaten hesabın var mı? Giriş yap",
+    "errors": {
+      "invalidCredentials": "E-posta ya da şifre hatalı.",
+      "emailExists": "Bu e-posta zaten kayıtlı.",
+      "passwordTooShort": "Şifre en az 8 karakter olmalı."
+    }
+  },
+  "form": {
+    "errors": {
+      "required": "Bu alan zorunlu.",
+      "invalidEmail": "Geçerli bir e-posta adresi gir."
+    }
+  },
+  "library": {
+    "title": "Kütüphanem",
+    "countBooks_one": "{{count}} kitap",
+    "countBooks_other": "{{count}} kitap",
+    "countWorks_one": "{{count}} farklı eser",
+    "countWorks_other": "{{count}} farklı eser",
+    "empty": {
+      "title": "Henüz kitap eklemedin",
+      "body": "Rafını doldurmaya başla — ilk kitabını elle ekleyebilirsin."
+    }
+  },
+  "format": {
+    "standard": "Normal Baskı",
+    "graphic_novel": "Grafik Roman",
+    "hardcover": "Ciltli",
+    "pocket": "Cep Boy",
+    "special_edition": "Özel Baskı",
+    "other": "Diğer"
   }
 }
