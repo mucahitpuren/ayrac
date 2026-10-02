@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { useTranslation } from 'react-i18next'
 import './i18n'
+import './index.css'
 
 function Boot() {
   const { t } = useTranslation()

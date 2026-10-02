@@ -1,1 +1,170 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/fraunces";
+@import "@fontsource-variable/dm-sans";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Warm-paper palette: the locked sketch tokens (sketch-findings-ayrac, default.css) mapped onto the
+  shadcn variable names, plus the UI-SPEC danger tokens. Light is :root, dark is .dark; the dark
+  class is set by the inline boot script in index.html and kept in sync by src/lib/theme.ts.
+  tests/unit/tokens.test.ts parses these two blocks, so keep one token per line, hex only.
+*/
+:root {
+  color-scheme: light;
+  --background: #f4efe6;
+  --foreground: #2b2620;
+  --card: #fbf8f2;
+  --card-foreground: #2b2620;
+  --popover: #fbf8f2;
+  --popover-foreground: #2b2620;
+  --muted: #ece5d8;
+  --muted-foreground: #7a7064;
+  --primary: #8a4b2a;
+  --primary-foreground: #f4efe6;
+  --secondary: #f0e2d6;
+  --secondary-foreground: #2b2620;
+  --accent: #ece5d8;
+  --accent-foreground: #2b2620;
+  --destructive: #b3392a;
+  --destructive-foreground: #ffffff;
+  --border: #e0d7c6;
+  --input: #e0d7c6;
+  --ring: #8a4b2a;
+  --radius: 8px;
+
+  --surface-2: #ece5d8;
+  --primary-soft: #f0e2d6;
+  --primary-hover: #723d21;
+  --brass: #b08a3e;
+  --success: #4d7c4a;
+  --success-soft: #e4ecd9;
+  --danger-soft: #f3ddd4;
+  --shadow-cover: 0 1px 1px rgba(60,40,20,0.10), 0 6px 14px rgba(60,40,20,0.18);
+  --hero-tint-fallback: #8a4b2a;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #1d1914;
+  --foreground: #f1e9dc;
+  --card: #26211b;
+  --card-foreground: #f1e9dc;
+  --popover: #26211b;
+  --popover-foreground: #f1e9dc;
+  --muted: #312a22;
+  --muted-foreground: #a89c8b;
+  --primary: #e0a57f;
+  --primary-foreground: #1d1914;
+  --secondary: #3a2a20;
+  --secondary-foreground: #f1e9dc;
+  --accent: #312a22;
+  --accent-foreground: #f1e9dc;
+  --destructive: #e08a72;
+  --destructive-foreground: #1d1914;
+  --border: #3b3329;
+  --input: #3b3329;
+  --ring: #e0a57f;
+
+  --surface-2: #312a22;
+  --primary-soft: #3a2a20;
+  --primary-hover: #ebb896;
+  --brass: #d6b36a;
+  --success: #9cc58f;
+  --success-soft: #26331f;
+  --danger-soft: #3a2620;
+  --shadow-cover: 0 1px 1px rgba(0,0,0,0.4), 0 8px 18px rgba(0,0,0,0.5);
+  /* Constant in both themes: white hero text on dark-mode primary (#e0a57f) is only 2.13:1. */
+  --hero-tint-fallback: #8a4b2a;
+}
+
+@theme inline {
+  --font-display: 'Fraunces Variable', Georgia, serif;
+  --font-sans: 'DM Sans Variable', system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface-2: var(--surface-2);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-hover: var(--primary-hover);
+  --color-brass: var(--brass);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-danger-soft: var(--danger-soft);
+  --color-hero-tint-fallback: var(--hero-tint-fallback);
+
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-cover: 2px;
+}
+
+/* Raw var instead of an @theme entry: a theme key named like its own source variable would be circular. */
+@utility shadow-cover {
+  box-shadow: var(--shadow-cover);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-weight: 400;
+  }
+
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  [role="button"] {
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease,
+      box-shadow 0.15s ease,
+      transform 0.15s ease;
+  }
+
+  /* The font-family comes from the generated font-display utility; weight and tracking ride along. */
+  .font-display {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
