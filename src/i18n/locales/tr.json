@@ -5,7 +5,8 @@
     "errorGeneric": "Bir şeyler ters gitti. Lütfen tekrar dene.",
     "retry": "Tekrar dene",
     "notFound": "Aradığın sayfa bulunamadı.",
-    "backToLibrary": "Kütüphaneme dön"
+    "backToLibrary": "Kütüphaneme dön",
+    "cancel": "Vazgeç"
   },
   "auth": {
     "title": "Ayraç'a hoş geldin",
@@ -41,6 +42,32 @@
     "empty": {
       "title": "Henüz kitap eklemedin",
       "body": "Rafını doldurmaya başla — ilk kitabını elle ekleyebilirsin."
+    },
+    "addBook": "Kitap ekle"
+  },
+  "book": {
+    "add": {
+      "title": "Yeni kitap ekle",
+      "submit": "Kitabı kaydet"
+    },
+    "form": {
+      "workSection": "Eser bilgileri",
+      "copySection": "Bu nüsha",
+      "title": "Başlık",
+      "authors": "Yazar(lar)",
+      "authorsHelper": "Birden fazla yazarı virgülle ayır",
+      "genre": "Tür",
+      "genrePrompt": "Tür seç",
+      "series": "Seri adı",
+      "seriesExample": "Örn. Yüzüklerin Efendisi",
+      "seriesPosition": "Seri sırası",
+      "seriesPositionExample": "Örn. 2",
+      "format": "Format",
+      "formatPrompt": "Format seç",
+      "publisher": "Yayınevi",
+      "editionTitle": "Bu nüshanın başlığı",
+      "editionTitleHelper": "Farklıysa, bu nüshaya özel başlık",
+      "note": "Not"
     }
   },
   "format": {

@@ -5,7 +5,8 @@
     "errorGeneric": "Something went wrong. Please try again.",
     "retry": "Try again",
     "notFound": "We couldn't find that page.",
-    "backToLibrary": "Back to my library"
+    "backToLibrary": "Back to my library",
+    "cancel": "Cancel"
   },
   "auth": {
     "title": "Welcome to Ayraç",
@@ -41,6 +42,32 @@
     "empty": {
       "title": "No books yet",
       "body": "Start filling your shelf — add your first book by hand."
+    },
+    "addBook": "Add book"
+  },
+  "book": {
+    "add": {
+      "title": "Add a new book",
+      "submit": "Save book"
+    },
+    "form": {
+      "workSection": "About the work",
+      "copySection": "This copy",
+      "title": "Title",
+      "authors": "Author(s)",
+      "authorsHelper": "Separate multiple authors with commas",
+      "genre": "Genre",
+      "genrePrompt": "Choose a genre",
+      "series": "Series name",
+      "seriesExample": "e.g. The Lord of the Rings",
+      "seriesPosition": "Position in series",
+      "seriesPositionExample": "e.g. 2",
+      "format": "Format",
+      "formatPrompt": "Choose a format",
+      "publisher": "Publisher",
+      "editionTitle": "Edition title",
+      "editionTitleHelper": "If different, this copy's own title",
+      "note": "Note"
     }
   },
   "format": {

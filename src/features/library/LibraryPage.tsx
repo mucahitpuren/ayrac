@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
+import { Plus } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { BookCover } from '@/components/book-cover'
 import { Button } from '@/components/ui/button'
@@ -62,15 +64,23 @@ export function LibraryPage() {
 
   return (
     <main className="mx-auto w-full max-w-[1240px] px-5 py-8 sm:px-8">
-      <header className="mb-8 flex flex-col gap-2">
-        <h1 className="font-display text-[44px] leading-[1.15]">{t('library.title')}</h1>
-        {data ? (
-          <p className="text-base text-muted-foreground">
-            {t('library.countBooks', { count: copyCount })} · {t('library.countWorks', { count: workCount })}
-          </p>
-        ) : (
-          <Skeleton className="h-6 w-48" aria-hidden />
-        )}
+      <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex flex-col gap-2">
+          <h1 className="font-display text-[44px] leading-[1.15]">{t('library.title')}</h1>
+          {data ? (
+            <p className="text-base text-muted-foreground">
+              {t('library.countBooks', { count: copyCount })} · {t('library.countWorks', { count: workCount })}
+            </p>
+          ) : (
+            <Skeleton className="h-6 w-48" aria-hidden />
+          )}
+        </div>
+        <Button asChild className="w-full sm:mt-2 sm:w-auto">
+          <Link to="/kitap/yeni">
+            <Plus aria-hidden size={20} />
+            {t('library.addBook')}
+          </Link>
+        </Button>
       </header>
 
       {isPending ? (
@@ -87,9 +97,15 @@ export function LibraryPage() {
           </Button>
         </div>
       ) : data.length === 0 ? (
-        <div className="flex flex-col gap-2 py-16 text-center">
+        <div className="flex flex-col items-center gap-2 py-16 text-center">
           <h2 className="font-display text-[22px] leading-tight">{t('library.empty.title')}</h2>
           <p className="text-base text-muted-foreground">{t('library.empty.body')}</p>
+          <Button asChild className="mt-4">
+            <Link to="/kitap/yeni">
+              <Plus aria-hidden size={20} />
+              {t('library.addBook')}
+            </Link>
+          </Button>
         </div>
       ) : (
         <ul className={GRID_CLASS}>
