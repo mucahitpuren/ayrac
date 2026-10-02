@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Private Shelf (Walking Skeleton)
 status: executing
-stopped_at: Completed 01-09-PLAN.md
-last_updated: "2026-10-02T11:33:05.196Z"
+stopped_at: Completed 01-10-PLAN.md
+last_updated: "2026-10-02T11:44:23.398Z"
 last_activity: 2026-10-02
 last_activity_desc: Phase 01 execution started
-state_head: a6ba53ff658fde96191d69864773cd8732ccce2d
+state_head: d2d84f8be114a27f20970861bfa7a337aeeb706e
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 11
-  completed_plans: 9
+  completed_plans: 10
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-25)
 ## Current Position
 
 Phase: 01 (Private Shelf (Walking Skeleton)) — EXECUTING
-Plan: 10 of 11
+Plan: 11 of 11
 Status: Ready to execute
 Last activity: 2026-10-02 — Phase 01 execution started
 
@@ -67,6 +67,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P07 | 18 min | 3 tasks | 4 files |
 | Phase 01 P08 | 5 min | 2 tasks | 13 files |
 | Phase 01 P09 | 5 min | 3 tasks | 12 files |
+| Phase 01 P10 | 9 min | 3 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,7 @@ Recent decisions affecting current work:
 - [Phase 01]: Live URL is https://ayrackitap.netlify.app (ayrac.netlify.app is someone else's site, never use it); push permission 'push izni: evet', publishing handled by 01-11 — Netlify name ayrac was taken; user granted push permission at the 01-07 checkpoint
 - [Phase 01]: 01-08: genre/format start undefined in the add form so BookFormValues stays the zod input type; series position is validated and kept only while a series name exists — Keeps types honest and prevents a hidden stale position from blocking a save
 - [Phase 01]: 01-09: sibling order compares created_at as instants then id; notes stored trimmed with blank as NULL; autosave reports only the newest text's outcome; dispose keeps an already flushed trailing save — Postgres trims fraction zeros so string compare is unreliable; matches add-form normalisation; avoids a false 'Kaydedildi' and losing the last edit on leave
+- [Phase 01]: 01-10: copy insert sends work_id only (trigger sets user_id); picker matching stays toLocaleLowerCase('tr') substring with the 'isik' vs 'Işık' gap pinned by a unit test; Enter is swallowed only while a suggestion is highlighted — Foreign or unknown works fail in the database (no existence oracle); Phase 2's normalize module must change the pinned gap knowingly; keeps Enter-to-submit working
 
 ### Pending Todos
 
@@ -115,6 +117,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-02T11:33:05.158Z
-Stopped at: Completed 01-09-PLAN.md
+Last session: 2026-10-02T11:44:23.352Z
+Stopped at: Completed 01-10-PLAN.md
 Resume file: None

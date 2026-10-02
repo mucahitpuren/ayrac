@@ -20,7 +20,7 @@ Requirements for the initial release. Each one maps to a roadmap phase.
 ### Library
 
 - [x] **LIB-01**: A work stores title, author(s), genre and an optional series name + position. A copy stores format (e.g. novel, graphic novel, hardcover), publisher, cover, optional volume coverage and an optional edition title that can differ from the work title (e.g. "Gençler İçin Fotoğraflarla Nutuk" under the work "Nutuk")
-- [ ] **LIB-02**: User can own multiple copies of one work (e.g. 1984 novel + graphic novel; Nutuk ×3)
+- [x] **LIB-02**: User can own multiple copies of one work (e.g. 1984 novel + graphic novel; Nutuk ×3)
 - [ ] **LIB-03**: User can browse the library as a cover grid or a list and switch between them
 - [ ] **LIB-04**: User can sort the library by title, author or date added
 - [ ] **LIB-05**: User can filter the library by format, genre and reading status
@@ -43,7 +43,7 @@ Requirements for the initial release. Each one maps to a roadmap phase.
 ### Add Book
 
 - [ ] **ADD-01**: User can search an external book API (Google Books / Open Library) by title, pick a result, and get title, author, publisher and cover prefilled
-- [ ] **ADD-02**: User can add a book manually when the API has no match
+- [x] **ADD-02**: User can add a book manually when the API has no match
 - [ ] **ADD-03**: When adding a work that already exists in the library, user is warned and can choose "add as new copy" or cancel
 - [ ] **ADD-04**: External API keys are never exposed to the browser (calls go through a server-side proxy)
 - [ ] **ADD-05**: Genre is auto-filled from the book API (Google Books `categories` / Open Library `subjects`), mapped to the app's genre list and editable. This includes books imported from Excel, which are enriched in the same background pass as covers
@@ -153,7 +153,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-06 | Phase 7 | Pending |
 | AUTH-07 | Phase 1 | Complete |
 | LIB-01 | Phase 1 | Complete |
-| LIB-02 | Phase 1 | Pending |
+| LIB-02 | Phase 1 | Complete |
 | LIB-03 | Phase 5 | Pending |
 | LIB-04 | Phase 5 | Pending |
 | LIB-05 | Phase 5 | Pending |
@@ -170,7 +170,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SRCH-04 | Phase 2 | Pending |
 | SRCH-05 | Phase 2 | Pending |
 | ADD-01 | Phase 4 | Pending |
-| ADD-02 | Phase 1 | Pending |
+| ADD-02 | Phase 1 | Complete |
 | ADD-03 | Phase 2 | Pending |
 | ADD-04 | Phase 4 | Pending |
 | ADD-05 | Phase 4 | Pending |
