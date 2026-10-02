@@ -51,8 +51,8 @@ const router = createBrowserRouter([
   {
     element: <PublicOnly />,
     children: [
-      { path: '/signup', element: <AuthPage mode="signup" /> },
-      { path: '/login', element: <AuthPage mode="login" /> },
+      { path: '/signup', element: <AuthPage key="signup" mode="signup" /> },
+      { path: '/login', element: <AuthPage key="login" mode="login" /> },
     ],
   },
   {
