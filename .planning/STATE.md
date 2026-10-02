@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Private Shelf (Walking Skeleton)
 status: executing
-stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-10-02T10:23:45.915Z"
+stopped_at: Completed 01-04-PLAN.md
+last_updated: "2026-10-02T10:41:06.595Z"
 last_activity: 2026-10-02
 last_activity_desc: Phase 01 execution started
-state_head: 010356a5dfbb688df2a997c36173fdad9c6f76cf
+state_head: bec996ee48a8e8e15db15d3ee01983efba10bb55
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 11
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-25)
 ## Current Position
 
 Phase: 01 (Private Shelf (Walking Skeleton)) — EXECUTING
-Plan: 4 of 11
+Plan: 5 of 11
 Status: Ready to execute
 Last activity: 2026-10-02 — Phase 01 execution started
 
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P01 | 16 min | 3 tasks | 14 files |
 | Phase 01 P03 | 8 min | 3 tasks | 15 files |
 | Phase 01 P02 | 4 min | 3 tasks | 9 files |
+| Phase 01 P04 | 5 min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,8 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-03: hero tint fallback is constant terracotta #8a4b2a in both themes; shadow-cover is an @utility; shadcn cn package rejected in favour of clsx+tailwind-merge cn() — White text on dark primary is 2.13:1; theme key self-reference; unapproved cn package from shadcn 4.21.0 output
 - [Phase 01]: 01-02: app client built only after assertClientSafeKey; secret/service_role keys refused; service key referenced only under tests/ — T-01-02-01 mitigation
 - [Phase 01]: 01-02: integration harness requires SUPABASE_PROD_PROJECT_REF and refuses URLs containing it; CLI linked to dev only, prod link deferred to 01-07 — D-12 / prohibition P2
+- [Phase 01]: 01-04: format and genre slug lists confirmed unchanged by the user and written into CHECK constraints (one-way door) — Matches Excel Kitap Türü values for Phase 3; labels live only in i18n catalogs
+- [Phase 01]: 01-04: query cache cleared whenever the signed-in account changes or ends — Prevents a second user on the same tab seeing the first user's cached library rows (client-side leak RLS cannot stop)
 
 ### Pending Todos
 
@@ -101,6 +104,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-02T10:23:45.877Z
-Stopped at: Completed 01-02-PLAN.md
+Last session: 2026-10-02T10:41:06.558Z
+Stopped at: Completed 01-04-PLAN.md
 Resume file: None

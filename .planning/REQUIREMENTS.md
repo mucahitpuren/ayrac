@@ -9,7 +9,7 @@ Requirements for the initial release. Each one maps to a roadmap phase.
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can sign up with email and password
+- [x] **AUTH-01**: User can sign up with email and password
 - [ ] **AUTH-02**: User can log in and log out
 - [ ] **AUTH-03**: User can reset a forgotten password via an email link
 - [ ] **AUTH-04**: User can sign in with Google
@@ -145,7 +145,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
 | AUTH-02 | Phase 1 | Pending |
 | AUTH-03 | Phase 7 | Pending |
 | AUTH-04 | Phase 7 | Pending |
@@ -211,6 +211,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | OPS-03 | Phase 7 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 64 total
 - Mapped to phases: 64
 - Unmapped: 0 ✓
