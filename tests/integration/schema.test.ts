@@ -284,12 +284,15 @@ describe('LIB-01 / LIB-02 schema', () => {
         }
       })
 
-      it.each([['javascript:alert(1)'], ['http://covers.example/a.jpg'], ['https://exa mple.com/a.jpg'], [`https://x.test/${'a'.repeat(2048)}`]])(
-        'rejects cover_url %s',
-        async (coverUrl) => {
-          expect((await insertCopy({ cover_url: coverUrl })).error?.code).toBe(CHECK_VIOLATION)
-        },
-      )
+      // Not https, http, whitespace inside, and 2048 + 15 characters (the name shows the label, not the value).
+      it.each([
+        ['a javascript: scheme', 'javascript:alert(1)'],
+        ['a plain http URL', 'http://covers.example/a.jpg'],
+        ['a URL with a space', 'https://exa mple.com/a.jpg'],
+        ['a URL over 2048 characters', `https://x.test/${'a'.repeat(2048)}`],
+      ])('rejects cover_url: %s', async (_label, coverUrl) => {
+        expect((await insertCopy({ cover_url: coverUrl })).error?.code).toBe(CHECK_VIOLATION)
+      })
 
       it('accepts an https cover_url', async () => {
         const { data, error } = await insertCopy({ cover_url: 'https://covers.openlibrary.org/b/id/1-L.jpg' })
