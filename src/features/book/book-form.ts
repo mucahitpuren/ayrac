@@ -1,5 +1,7 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import type { Resolver } from 'react-hook-form'
 import { z } from 'zod'
-import type { NewWorkWithCopy } from '@/features/library/queries'
+import type { NewCopyForWork, NewWorkWithCopy } from '@/features/library/queries'
 import { FORMAT_SLUGS, GENRE_SLUGS } from '@/lib/vocab'
 
 // Limits mirror the database CHECK constraints. Postgres char_length counts code points, so the client
@@ -121,3 +123,20 @@ export function toCreateWorkWithCopyInput(values: BookFormValues): NewWorkWithCo
     note: emptyToNull(values.note),
   }
 }
+
+export type CopyFormValues = Pick<BookFormValues, 'format' | 'publisher' | 'editionTitle' | 'note'>
+
+// LIB-02: only the copy fields; the work is identified by id and never edited from the copy forms.
+export function toAddCopyInput(workId: string, values: CopyFormValues): NewCopyForWork {
+  return {
+    workId,
+    format: values.format,
+    publisher: emptyToNull(values.publisher),
+    editionTitle: emptyToNull(values.editionTitle),
+    note: emptyToNull(values.note),
+  }
+}
+
+// The copy forms share CopyFields with the full form, so they run on the full form's value type; this
+// resolver validates the copy fields only. Work fields are neither validated nor required in that mode.
+export const copyOnlyResolver = zodResolver(copyFieldsSchema) as unknown as Resolver<BookFormValues>

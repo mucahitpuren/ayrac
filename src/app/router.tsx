@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { AppShell } from '@/app/AppShell'
 import { AuthPage } from '@/features/auth/AuthPage'
 import { useAuth } from '@/features/auth/AuthProvider'
+import { AddCopyPage } from '@/features/book/AddCopyPage'
 import { AddBookPage } from '@/features/book/AddBookPage'
 import { CopyDetailPage } from '@/features/book/CopyDetailPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
@@ -59,6 +60,7 @@ const router = createBrowserRouter([
       { path: '/', element: <LibraryPage /> },
       { path: '/kitap/yeni', element: <AddBookPage /> },
       { path: '/kitap/:copyId', element: <CopyDetailPage /> },
+      { path: '/eser/:workId/nusha-ekle', element: <AddCopyPage /> },
     ],
   },
   { path: '*', element: <NotFound /> },

@@ -1,3 +1,4 @@
+import { Plus } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { BookCover } from '@/components/book-cover'
@@ -58,6 +59,18 @@ export function SiblingsSection({ detail }: { detail: CopyDetail }) {
             </li>
           )
         })}
+        <li className="min-w-0">
+          <Link
+            to={`/eser/${detail.work_id}/nusha-ekle`}
+            className={cn(
+              CARD_CLASS,
+              'h-full min-h-11 items-center justify-center border-dashed text-center font-semibold text-primary outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+            )}
+          >
+            <Plus aria-hidden size={24} />
+            <span className="text-base leading-tight">{t('book.detail.addCopy')}</span>
+          </Link>
+        </li>
       </ul>
     </section>
   )

@@ -14,6 +14,37 @@ function SectionHeading({ children }: { children: string }) {
   return <h2 className="text-base font-semibold text-foreground">{children}</h2>
 }
 
+export type WorkContextData = {
+  title: string
+  authors: string[]
+  genre: string | null
+  series: string | null
+  series_position: number | null
+}
+
+// Read-only view of a work: the add-copy header and the picked-work summary on the add form. Text only,
+// rendered by React (never as HTML).
+export function WorkContext({ work, as: Heading = 'h1' }: { work: WorkContextData; as?: 'h1' | 'h2' }) {
+  const { t } = useTranslation()
+  const details = [
+    work.genre ? t(`genre.${work.genre}`) : null,
+    work.series
+      ? work.series_position !== null
+        ? t('book.detail.series', { series: work.series, position: work.series_position })
+        : work.series
+      : null,
+  ].filter((item): item is string => item !== null)
+  return (
+    <div className="flex min-w-0 flex-col gap-1">
+      <Heading className="font-display text-[22px] leading-tight [overflow-wrap:anywhere]">{work.title}</Heading>
+      <p className="text-base text-muted-foreground [overflow-wrap:anywhere]">{work.authors.join(', ')}</p>
+      {details.length > 0 ? (
+        <p className="text-[13px] leading-[1.3] text-muted-foreground">{details.join(' · ')}</p>
+      ) : null}
+    </div>
+  )
+}
+
 export function WorkFields({ form, autoFocusTitle = false }: FormProps & { autoFocusTitle?: boolean }) {
   const { t, i18n } = useTranslation()
   const ids = { title: useId(), authors: useId(), genre: useId(), series: useId(), position: useId() }
@@ -131,7 +162,7 @@ export function WorkFields({ form, autoFocusTitle = false }: FormProps & { autoF
   )
 }
 
-export function CopyFields({ form }: FormProps) {
+export function CopyFields({ form, autoFocusFormat = false }: FormProps & { autoFocusFormat?: boolean }) {
   const { t } = useTranslation()
   const ids = { format: useId(), publisher: useId(), editionTitle: useId(), note: useId() }
   const {
@@ -154,6 +185,7 @@ export function CopyFields({ form }: FormProps) {
                 <SelectTrigger
                   id={id}
                   ref={field.ref}
+                  autoFocus={autoFocusFormat}
                   onBlur={field.onBlur}
                   aria-invalid={invalid || undefined}
                   aria-describedby={describedBy}

@@ -75,7 +75,8 @@
       "kickerMany_other": "You own {{count}} copies of this work",
       "siblingsTitle": "Copies of this work",
       "current": "You're viewing this",
-      "series": "{{series}} #{{position}}"
+      "series": "{{series}} #{{position}}",
+      "addCopy": "Add new copy"
     },
     "note": {
       "title": "Your note",
@@ -84,6 +85,10 @@
       "saving": "Saving…",
       "saved": "Saved",
       "saveFailed": "Couldn't save, try again."
+    },
+    "addCopy": {
+      "title": "New copy of \"{{work}}\"",
+      "submit": "Save copy"
     }
   },
   "format": {

@@ -1,8 +1,9 @@
 // Client-injected data functions shared by the app and the integration tests. The client type is
 // imported type-only so tests can load this module without the browser env vars (src/lib/supabase.ts
 // throws at import time when VITE_ variables are missing).
+import type { QueryClient } from '@tanstack/react-query'
 import type { AppSupabaseClient } from '@/lib/supabase'
-import type { Tables } from '@/lib/database.types'
+import type { Tables, TablesInsert } from '@/lib/database.types'
 
 export const libraryKeys = { all: ['library'] as const }
 
@@ -81,7 +82,8 @@ export async function createWorkWithCopy(
   return { workId: data.new_work_id, copyId: data.new_copy_id }
 }
 
-export const copyKeys = { detail: (id: string) => ['copy', id] as const }
+export const copyKeys = { all: ['copy'] as const, detail: (id: string) => ['copy', id] as const }
+export const workKeys = { all: ['work'] as const, summary: (id: string) => ['work', id] as const }
 
 export type CopySibling = Pick<Tables<'copies'>, 'id' | 'format' | 'publisher' | 'edition_title' | 'created_at'>
 
@@ -141,4 +143,57 @@ export async function updateCopyNote(client: AppSupabaseClient, copyId: string, 
   const { data, error } = await client.from('copies').update({ note }).eq('id', copyId).select('id')
   if (error) throw error
   if (data.length === 0) throw new Error('copy not found')
+}
+
+export type WorkSummaryRow = Pick<Tables<'works'>, 'id' | 'title' | 'authors' | 'genre' | 'series' | 'series_position'> & {
+  copyCount: number
+}
+
+export type NewCopyForWork = {
+  workId: string
+  format: string
+  publisher: string | null
+  editionTitle: string | null
+  note: string | null
+}
+
+// LIB-02: the work behind /eser/:workId/nusha-ekle. null (not an error) for a malformed id without any request,
+// and for a work RLS hides, so a foreign id looks exactly like a missing one.
+export async function fetchWorkSummary(client: AppSupabaseClient, workId: string): Promise<WorkSummaryRow | null> {
+  if (!isUuid(workId)) return null
+  const { data, error } = await client
+    .from('works')
+    .select('id, title, authors, genre, series, series_position, copies(count)')
+    .eq('id', workId)
+    .maybeSingle()
+  if (error) throw error
+  if (!data) return null
+  const { copies, ...work } = data as unknown as Omit<WorkSummaryRow, 'copyCount'> & { copies: { count: number }[] }
+  return { ...work, copyCount: copies[0]?.count ?? 0 }
+}
+
+// LIB-02: attach a new copy to an existing work. The payload carries work_id only; user_id is set by the
+// invoker-rights trigger from the work the caller can see, so a foreign or unknown work fails with 'work not found'.
+export async function addCopyToWork(client: AppSupabaseClient, input: NewCopyForWork): Promise<string> {
+  const { data, error } = await client
+    .from('copies')
+    .insert({
+      work_id: input.workId,
+      format: input.format,
+      publisher: input.publisher,
+      edition_title: input.editionTitle,
+      note: input.note,
+    } as TablesInsert<'copies'>) // the generated type requires user_id, but the trigger always sets it
+    .select('id')
+    .single()
+  if (error) throw error
+  return data.id
+}
+
+// After a copy was added every list that shows copies or copy counts is stale: the library, each copy's
+// siblings and every work header. Prefix keys match all of them.
+export async function invalidateCopyQueries(queryClient: QueryClient): Promise<void> {
+  await Promise.all(
+    [libraryKeys.all, copyKeys.all, workKeys.all].map((queryKey) => queryClient.invalidateQueries({ queryKey })),
+  )
 }

@@ -75,7 +75,8 @@
       "kickerMany_other": "Bu eserden {{count}} nüshan var",
       "siblingsTitle": "Bu eserin nüshaların",
       "current": "Şu an bakıyorsun",
-      "series": "{{series}} #{{position}}"
+      "series": "{{series}} #{{position}}",
+      "addCopy": "Yeni nüsha ekle"
     },
     "note": {
       "title": "Notun",
@@ -84,6 +85,10 @@
       "saving": "Kaydediliyor…",
       "saved": "Kaydedildi",
       "saveFailed": "Kaydedilemedi, tekrar dene."
+    },
+    "addCopy": {
+      "title": "\"{{work}}\" için yeni nüsha",
+      "submit": "Nüshayı kaydet"
     }
   },
   "format": {
