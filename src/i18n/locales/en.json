@@ -27,7 +27,9 @@
   "form": {
     "errors": {
       "required": "This field is required.",
-      "invalidEmail": "Enter a valid email address."
+      "invalidEmail": "Enter a valid email address.",
+      "tooLong": "This is too long.",
+      "positiveInteger": "Enter a whole number of 1 or more."
     }
   },
   "library": {
@@ -47,6 +49,30 @@
     "hardcover": "Hardcover",
     "pocket": "Pocket size",
     "special_edition": "Special edition",
+    "other": "Other"
+  },
+  "genre": {
+    "novel": "Novel",
+    "short_stories": "Short stories",
+    "poetry": "Poetry",
+    "drama": "Drama",
+    "essay": "Essay",
+    "classics": "Classics",
+    "science_fiction": "Science fiction",
+    "fantasy": "Fantasy",
+    "crime": "Crime & mystery",
+    "humor": "Humour",
+    "children": "Children & young adult",
+    "biography": "Biography & memoir",
+    "history": "History",
+    "philosophy": "Philosophy",
+    "psychology": "Psychology",
+    "politics_society": "Politics & society",
+    "religion_mythology": "Religion & mythology",
+    "science": "Science",
+    "art": "Art",
+    "self_help": "Self-help",
+    "travel": "Travel",
     "other": "Other"
   },
   "language": {

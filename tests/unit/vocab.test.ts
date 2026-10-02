@@ -24,7 +24,7 @@ function migrationList(constraint: string): string[] {
   const sql = readFileSync(new URL('../../supabase/migrations/20260926120000_init_schema.sql', import.meta.url), 'utf8')
   const match = new RegExp(`constraint ${constraint} check \\([\\s\\S]*?\\bin \\(([^)]*)\\)`).exec(sql)
   if (!match) throw new Error(`constraint ${constraint} not found in init_schema.sql`)
-  return [...match[1].matchAll(/'([^']+)'/g)].map((m) => m[1])
+  return [...(match[1] ?? '').matchAll(/'([^']+)'/g)].map((m) => m[1] as string)
 }
 
 describe('vocab slugs vs the migration', () => {

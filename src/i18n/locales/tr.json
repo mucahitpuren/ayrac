@@ -27,7 +27,9 @@
   "form": {
     "errors": {
       "required": "Bu alan zorunlu.",
-      "invalidEmail": "Geçerli bir e-posta adresi gir."
+      "invalidEmail": "Geçerli bir e-posta adresi gir.",
+      "tooLong": "Bu alan çok uzun.",
+      "positiveInteger": "1 veya daha büyük bir tam sayı gir."
     }
   },
   "library": {
@@ -47,6 +49,30 @@
     "hardcover": "Ciltli",
     "pocket": "Cep Boy",
     "special_edition": "Özel Baskı",
+    "other": "Diğer"
+  },
+  "genre": {
+    "novel": "Roman",
+    "short_stories": "Öykü",
+    "poetry": "Şiir",
+    "drama": "Tiyatro",
+    "essay": "Deneme",
+    "classics": "Klasik",
+    "science_fiction": "Bilim Kurgu",
+    "fantasy": "Fantastik",
+    "crime": "Polisiye",
+    "humor": "Mizah",
+    "children": "Çocuk & Gençlik",
+    "biography": "Biyografi & Anı",
+    "history": "Tarih",
+    "philosophy": "Felsefe",
+    "psychology": "Psikoloji",
+    "politics_society": "Siyaset & Toplum",
+    "religion_mythology": "Din & Mitoloji",
+    "science": "Bilim",
+    "art": "Sanat",
+    "self_help": "Kişisel Gelişim",
+    "travel": "Gezi",
     "other": "Diğer"
   },
   "language": {
