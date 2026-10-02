@@ -26,8 +26,8 @@ Requirements for the initial release. Each one maps to a roadmap phase.
 - [ ] **LIB-05**: User can filter the library by format, genre and reading status
 - [x] **LIB-06**: User can open a work detail page showing every owned copy of that work
 - [ ] **LIB-07**: User can open an author page listing every work by that author in their library
-- [ ] **LIB-08**: User can edit work and copy details
-- [ ] **LIB-09**: User can delete a copy or a work after confirming
+- [x] **LIB-08**: User can edit work and copy details
+- [x] **LIB-09**: User can delete a copy or a work after confirming
 - [x] **LIB-10**: Every owned copy is shown as its own book with its own cover in the library, shelves and search results. Copies of the same work are never merged into one tile (e.g. no "1984 ×2")
 - [ ] **LIB-11**: The home page shows shelves: the last 6 added copies, then one shelf per genre (largest first), each with "see all" opening the filtered library. The header "Library" link opens the full sortable/filterable library
 - [ ] **LIB-12**: The home page also shows one shelf per series, with books in position order and missing volumes shown as placeholders
@@ -159,8 +159,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LIB-05 | Phase 5 | Pending |
 | LIB-06 | Phase 1 | Complete |
 | LIB-07 | Phase 5 | Pending |
-| LIB-08 | Phase 1 | Pending |
-| LIB-09 | Phase 1 | Pending |
+| LIB-08 | Phase 1 | Complete |
+| LIB-09 | Phase 1 | Complete |
 | LIB-10 | Phase 1 | Complete |
 | LIB-11 | Phase 5 | Pending |
 | LIB-12 | Phase 6 | Pending |
