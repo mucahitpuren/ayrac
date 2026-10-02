@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Private Shelf (Walking Skeleton)
 status: executing
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-10-02T10:04:08.711Z"
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-10-02T10:23:45.915Z"
 last_activity: 2026-10-02
 last_activity_desc: Phase 01 execution started
-state_head: 1ecdc7afa47f932deff1b6a54c2fa9e73e3253e1
+state_head: 010356a5dfbb688df2a997c36173fdad9c6f76cf
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 11
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-25)
 ## Current Position
 
 Phase: 01 (Private Shelf (Walking Skeleton)) — EXECUTING
-Plan: 3 of 11
+Plan: 4 of 11
 Status: Ready to execute
 Last activity: 2026-10-02 — Phase 01 execution started
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 |------|----------|-------|-------|
 | Phase 01 P01 | 16 min | 3 tasks | 14 files |
 | Phase 01 P03 | 8 min | 3 tasks | 15 files |
+| Phase 01 P02 | 4 min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,8 @@ Recent decisions affecting current work:
 - [Phase 01]: Language rule: stored ayrac-lng (tr/en) wins, else first navigator language tr/en, else English; persisted only via explicit setLanguage (detector caches: []) — UI-01: browser default must stay a default; inline boot script mirrors resolveLanguage
 - [Phase 01]: vitest@5.0.2 installed with --legacy-peer-deps due to npm 10.9.0 arborist crash on optional peer cycle — Same exact version; default npm ci verified working; revisit on npm upgrade
 - [Phase 01]: 01-03: hero tint fallback is constant terracotta #8a4b2a in both themes; shadow-cover is an @utility; shadcn cn package rejected in favour of clsx+tailwind-merge cn() — White text on dark primary is 2.13:1; theme key self-reference; unapproved cn package from shadcn 4.21.0 output
+- [Phase 01]: 01-02: app client built only after assertClientSafeKey; secret/service_role keys refused; service key referenced only under tests/ — T-01-02-01 mitigation
+- [Phase 01]: 01-02: integration harness requires SUPABASE_PROD_PROJECT_REF and refuses URLs containing it; CLI linked to dev only, prod link deferred to 01-07 — D-12 / prohibition P2
 
 ### Pending Todos
 
@@ -98,6 +101,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-02T10:04:08.663Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-10-02T10:23:45.877Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None
