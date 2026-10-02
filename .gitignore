@@ -3,3 +3,24 @@ data/
 
 # GSD research cache
 .planning/research/.cache/
+
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+
+# Environment files: only the documented example is tracked
+.env*
+!.env.example
+*.local
+
+# Supabase CLI scratch
+supabase/.temp/
+supabase/.branches/
+
+# Netlify local state
+.netlify/
+
+# OS / logs
+.DS_Store
+*.log
