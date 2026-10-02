@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { FORMAT_SLUGS, GENRE_SLUGS } from '@/lib/vocab'
 import type { BookFormValues } from './book-form'
+import { WorkPicker, type ComboboxInputProps } from './WorkPicker'
+import type { WorkSummary } from './work-picker'
 
 type FormProps = { form: UseFormReturn<BookFormValues> }
 
@@ -45,7 +47,13 @@ export function WorkContext({ work, as: Heading = 'h1' }: { work: WorkContextDat
   )
 }
 
-export function WorkFields({ form, autoFocusTitle = false }: FormProps & { autoFocusTitle?: boolean }) {
+type WorkFieldsProps = FormProps & {
+  autoFocusTitle?: boolean
+  /** D-08: when given, the Title field suggests the user's own works and reports the one they pick. */
+  picker?: { works: WorkSummary[]; onPick: (work: WorkSummary) => void }
+}
+
+export function WorkFields({ form, autoFocusTitle = false, picker }: WorkFieldsProps) {
   const { t, i18n } = useTranslation()
   const ids = { title: useId(), authors: useId(), genre: useId(), series: useId(), position: useId() }
   const {
@@ -54,6 +62,8 @@ export function WorkFields({ form, autoFocusTitle = false }: FormProps & { autoF
     formState: { errors },
   } = form
   const series = useWatch({ control, name: 'series' })
+  const title = useWatch({ control, name: 'title' })
+  const titleField = register('title')
 
   // D-03: sorted by the label in the active language, 'other' always last.
   const genreOptions = useMemo(() => {
@@ -70,16 +80,30 @@ export function WorkFields({ form, autoFocusTitle = false }: FormProps & { autoF
       <SectionHeading>{t('book.form.workSection')}</SectionHeading>
 
       <FormField id={ids.title} label={t('book.form.title')} error={errors.title?.message}>
-        {({ id, describedBy, invalid }) => (
-          <Input
-            id={id}
-            autoFocus={autoFocusTitle}
-            autoComplete="off"
-            aria-invalid={invalid || undefined}
-            aria-describedby={describedBy}
-            {...register('title')}
-          />
-        )}
+        {({ id, describedBy, invalid }) => {
+          const input = (comboboxProps?: ComboboxInputProps) => (
+            <Input
+              id={id}
+              autoFocus={autoFocusTitle}
+              autoComplete="off"
+              aria-invalid={invalid || undefined}
+              aria-describedby={describedBy}
+              {...titleField}
+              {...comboboxProps}
+              onBlur={(event) => {
+                void titleField.onBlur(event)
+                comboboxProps?.onBlur(event)
+              }}
+            />
+          )
+          return picker ? (
+            <WorkPicker query={title ?? ''} works={picker.works} onPick={picker.onPick}>
+              {input}
+            </WorkPicker>
+          ) : (
+            input()
+          )
+        }}
       </FormField>
 
       <FormField

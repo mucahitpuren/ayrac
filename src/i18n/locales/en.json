@@ -89,6 +89,12 @@
     "addCopy": {
       "title": "New copy of \"{{work}}\"",
       "submit": "Save copy"
+    },
+    "picker": {
+      "suggestion_one": "{{title}} — {{authors}} · {{count}} copy",
+      "suggestion_other": "{{title}} — {{authors}} · {{count}} copies",
+      "clear": "Choose another work",
+      "listLabel": "Matching works in your library"
     }
   },
   "format": {

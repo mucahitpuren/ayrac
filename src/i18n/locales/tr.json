@@ -89,6 +89,12 @@
     "addCopy": {
       "title": "\"{{work}}\" için yeni nüsha",
       "submit": "Nüshayı kaydet"
+    },
+    "picker": {
+      "suggestion_one": "{{title}} — {{authors}} · {{count}} nüsha",
+      "suggestion_other": "{{title}} — {{authors}} · {{count}} nüsha",
+      "clear": "Başka eser seç",
+      "listLabel": "Kütüphanendeki eşleşen eserler"
     }
   },
   "format": {
