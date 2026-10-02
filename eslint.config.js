@@ -36,7 +36,7 @@ export default defineConfig(
     },
   },
   {
-    files: ['tests/**/*.ts', 'vite.config.ts', 'scripts/**/*.{js,ts}', 'eslint.config.js'],
+    files: ['tests/**/*.ts', 'vite.config.ts', 'scripts/**/*.{js,mjs,ts}', 'eslint.config.js'],
     languageOptions: { globals: globals.node },
   },
 )

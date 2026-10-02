@@ -1,0 +1,30 @@
+[build]
+  # Build, then fail the deploy if the output contains a secret key (T-01-07-02).
+  command = "npm run build && node scripts/check-secrets.mjs dist"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # These two values are public by design: the URL and the anon/publishable key are inlined into the
+  # browser bundle and only work through row-level security. Netlify's own scanner would flag them on every
+  # build, so they are omitted from it. Secret keys are still blocked by scripts/check-secrets.mjs above.
+  SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_URL,VITE_SUPABASE_ANON_KEY"
+
+# Client-side routes (e.g. /kitap/<id>) must return the SPA on a direct load or refresh.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
