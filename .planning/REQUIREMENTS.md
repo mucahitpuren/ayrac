@@ -100,9 +100,9 @@ Requirements for the initial release. Each one maps to a roadmap phase.
 
 ### UI & Language
 
-- [ ] **UI-01**: The UI is available in Turkish and English. The language defaults to the browser language, can be switched, and the choice is remembered
-- [ ] **UI-02**: User can switch between light and dark themes (defaulting to the system setting)
-- [ ] **UI-03**: Layout is responsive and mobile-first, and works well on both phone and desktop
+- [x] **UI-01**: The UI is available in Turkish and English. The language defaults to the browser language, can be switched, and the choice is remembered
+- [x] **UI-02**: User can switch between light and dark themes (defaulting to the system setting)
+- [x] **UI-03**: Layout is responsive and mobile-first, and works well on both phone and desktop
 
 ### Deployment & Open Source
 
@@ -203,9 +203,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STAT-04 | Phase 5 | Pending |
 | EXP-01 | Phase 7 | Pending |
 | EXP-02 | Phase 7 | Pending |
-| UI-01 | Phase 1 | Pending |
-| UI-02 | Phase 1 | Pending |
-| UI-03 | Phase 1 | Pending |
+| UI-01 | Phase 1 | Complete |
+| UI-02 | Phase 1 | Complete |
+| UI-03 | Phase 1 | Complete |
 | OPS-01 | Phase 7 | Pending |
 | OPS-02 | Phase 7 | Pending |
 | OPS-03 | Phase 7 | Pending |

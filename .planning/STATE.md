@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Private Shelf (Walking Skeleton)
 status: executing
-stopped_at: Completed 01-06-PLAN.md
-last_updated: "2026-10-02T10:57:01.613Z"
+stopped_at: Completed 01-07-PLAN.md
+last_updated: "2026-10-02T11:17:42.692Z"
 last_activity: 2026-10-02
 last_activity_desc: Phase 01 execution started
-state_head: 1c43e1d3a0a0c162b0782b395ee4826279f5a3ef
+state_head: c7b8e667632dc94b3442d6ccc4a9eaf475f67e4a
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 11
-  completed_plans: 6
+  completed_plans: 7
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-25)
 ## Current Position
 
 Phase: 01 (Private Shelf (Walking Skeleton)) — EXECUTING
-Plan: 7 of 11
+Plan: 8 of 11
 Status: Ready to execute
 Last activity: 2026-10-02 — Phase 01 execution started
 
@@ -64,6 +64,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P04 | 5 min | 2 tasks | 11 files |
 | Phase 01 P05 | 5 min | 2 tasks | 12 files |
 | Phase 01 P06 | 6 min | 3 tasks | 5 files |
+| Phase 01 P07 | 18 min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,7 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-05: language/theme menus are radio dropdowns; SIGNED_OUT always clears the query cache and an explicit-sign-out ref separates logout from session expiry — Shows the active choice without custom markers; prevents cross-account cache residue and silent expiry
 - [Phase 01]: 01-06: migration reader throws on unparseable functions and non-public tables instead of skipping them, so the AUTH-07 static gate cannot be bypassed by an unusual migration style — A silently skipped object would pass the gate unchecked
 - [Phase 01]: 01-06: later phases adding a table must add it to COVERED_TABLES in tests/integration/rls-isolation.test.ts and extend the matrix, or the suite stays red — Covered-table list is asserted equal to schemaTables()
+- [Phase 01]: Live URL is https://ayrackitap.netlify.app (ayrac.netlify.app is someone else's site, never use it); push permission 'push izni: evet', publishing handled by 01-11 — Netlify name ayrac was taken; user granted push permission at the 01-07 checkpoint
 
 ### Pending Todos
 
@@ -109,6 +111,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-02T10:57:01.563Z
-Stopped at: Completed 01-06-PLAN.md
+Last session: 2026-10-02T11:17:42.648Z
+Stopped at: Completed 01-07-PLAN.md
 Resume file: None
