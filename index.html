@@ -3,6 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!--
+      Pre-paint bootstrap: sets <html lang> and the dark class before first paint.
+      TS twins that must stay in sync: src/i18n/languages.ts (resolveLanguage) and src/lib/theme.ts.
+    -->
+    <script>
+      (function () {
+        var root = document.documentElement
+        try {
+          var lng = 'en'
+          var stored = localStorage.getItem('ayrac-lng')
+          if (stored === 'tr' || stored === 'en') {
+            lng = stored
+          } else {
+            var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language]
+            for (var i = 0; i < langs.length; i++) {
+              var primary = String(langs[i] || '').split('-')[0].toLowerCase()
+              if (primary === 'tr' || primary === 'en') {
+                lng = primary
+                break
+              }
+            }
+          }
+          root.lang = lng
+        } catch (e) {}
+        try {
+          var theme = localStorage.getItem('ayrac-theme')
+          var dark = theme === 'dark' || (theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          root.classList.toggle('dark', dark)
+          root.style.colorScheme = dark ? 'dark' : 'light'
+        } catch (e) {}
+      })()
+    </script>
     <title>Ayraç</title>
     <link rel="icon" href="data:," />
     <meta name="theme-color" content="#f4efe6" media="(prefers-color-scheme: light)" />
