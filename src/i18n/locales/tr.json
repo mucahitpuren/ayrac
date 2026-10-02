@@ -76,6 +76,14 @@
       "siblingsTitle": "Bu eserin nüshaların",
       "current": "Şu an bakıyorsun",
       "series": "{{series}} #{{position}}"
+    },
+    "note": {
+      "title": "Notun",
+      "label": "Bu nüsha için notun",
+      "unsaved": "Kaydedilmedi…",
+      "saving": "Kaydediliyor…",
+      "saved": "Kaydedildi",
+      "saveFailed": "Kaydedilemedi, tekrar dene."
     }
   },
   "format": {

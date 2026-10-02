@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { copyKeys, fetchCopyDetail } from '@/features/library/queries'
 import { supabase } from '@/lib/supabase'
 import { CopyHero } from './CopyHero'
+import { NoteCard } from './NoteCard'
 import { SiblingsSection } from './SiblingsSection'
 
 const CONTENT_CLASS = 'mx-auto flex w-full max-w-[1240px] flex-col gap-8 px-5 py-8 sm:px-8'
@@ -68,6 +69,7 @@ export function CopyDetailPage() {
     <main>
       <CopyHero detail={data} />
       <div className={CONTENT_CLASS}>
+        <NoteCard key={data.id} copyId={data.id} initialNote={data.note} />
         <SiblingsSection detail={data} />
       </div>
     </main>
