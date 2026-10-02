@@ -1,5 +1,6 @@
-// Framework-free autosave controller for the copy note (READ-04). RED stub: the behaviour is specified by
-// tests/unit/note-autosave.test.ts and implemented in the next commit.
+// Framework-free autosave controller for the copy note (READ-04): one debounce timer, one in-flight save and one
+// "pending text" slot. A newer text is only saved after the in-flight save settles (single-flight with a trailing
+// save), so an older write can never land after a newer one. No React or Supabase here by design.
 export type NoteSaveState = 'idle' | 'dirty' | 'saving' | 'saved' | 'error'
 
 export type NoteAutosaveOptions = {
@@ -14,7 +15,87 @@ export type NoteAutosave = {
   dispose: () => void
 }
 
-export function createNoteAutosave(options: NoteAutosaveOptions): NoteAutosave {
-  void options
-  return { change: () => undefined, flush: () => undefined, dispose: () => undefined }
+// A blank note is stored as NULL; the textarea itself keeps whatever was typed.
+function normalize(text: string): string | null {
+  const trimmed = text.trim()
+  return trimmed === '' ? null : trimmed
+}
+
+export function createNoteAutosave({ save, delayMs = 800, onState }: NoteAutosaveOptions): NoteAutosave {
+  let timer: ReturnType<typeof setTimeout> | null = null
+  let pending = '' // latest text not yet handed to save()
+  let hasPending = false
+  let due = false // the debounce elapsed (or flush ran) while a save was in flight
+  let inFlight = false
+  let disposed = false
+
+  const report = (state: NoteSaveState) => {
+    if (!disposed) onState(state)
+  }
+
+  const clearTimer = () => {
+    if (timer !== null) {
+      clearTimeout(timer)
+      timer = null
+    }
+  }
+
+  const start = () => {
+    const text = pending
+    pending = ''
+    hasPending = false
+    due = false
+    inFlight = true
+    report('saving')
+    void save(normalize(text)).then(
+      () => settle(true),
+      () => settle(false),
+    )
+  }
+
+  const settle = (ok: boolean) => {
+    inFlight = false
+    if (hasPending) {
+      // Newer text arrived while saving: it supersedes this result, so neither "saved" nor "error" is reported.
+      if (due) start()
+      else report('dirty')
+      return
+    }
+    report(ok ? 'saved' : 'error')
+  }
+
+  const run = () => {
+    clearTimer()
+    if (!hasPending) return
+    if (inFlight) due = true
+    else start()
+  }
+
+  return {
+    change(text) {
+      if (disposed) return
+      pending = text
+      hasPending = true
+      due = false
+      report('dirty')
+      clearTimer()
+      timer = setTimeout(() => {
+        timer = null
+        run()
+      }, delayMs)
+    },
+    flush() {
+      if (disposed) return
+      run()
+    },
+    dispose() {
+      clearTimer()
+      // A text that was already flushed behind an in-flight save still goes out; an unflushed one is dropped.
+      if (!due) {
+        pending = ''
+        hasPending = false
+      }
+      disposed = true
+    },
+  }
 }
