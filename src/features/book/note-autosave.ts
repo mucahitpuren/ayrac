@@ -7,6 +7,8 @@ export type NoteAutosaveOptions = {
   save: (text: string | null) => Promise<void>
   delayMs?: number
   onState: (state: NoteSaveState) => void
+  /** Called when the last save fails after dispose(): onState is silent by then, but the text is lost. */
+  onFinalError?: () => void
 }
 
 export type NoteAutosave = {
@@ -21,7 +23,12 @@ function normalize(text: string): string | null {
   return trimmed === '' ? null : trimmed
 }
 
-export function createNoteAutosave({ save, delayMs = 800, onState }: NoteAutosaveOptions): NoteAutosave {
+export function createNoteAutosave({
+  save,
+  delayMs = 800,
+  onState,
+  onFinalError,
+}: NoteAutosaveOptions): NoteAutosave {
   let timer: ReturnType<typeof setTimeout> | null = null
   let pending = '' // latest text not yet handed to save()
   let hasPending = false
@@ -61,6 +68,8 @@ export function createNoteAutosave({ save, delayMs = 800, onState }: NoteAutosav
       else report('dirty')
       return
     }
+    // After dispose the component is gone, so a failed last save would otherwise lose the text without a sign.
+    if (!ok && disposed) onFinalError?.()
     report(ok ? 'saved' : 'error')
   }
 

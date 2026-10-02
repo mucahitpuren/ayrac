@@ -32,6 +32,8 @@ export function NoteCard({ copyId, initialNote }: { copyId: string; initialNote:
         // The textarea is never reset, so a failed save only warns; the next edit retries with the latest text.
         if (next === 'error') toast.error(i18n.t('book.note.saveFailed'))
       },
+      // The unmount flush failed after the component state is gone: the toast is the only sign left.
+      onFinalError: () => toast.error(i18n.t('book.note.saveFailed')),
     })
     autosave.current = controller
     return () => {

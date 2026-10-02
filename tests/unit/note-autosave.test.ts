@@ -8,13 +8,14 @@ function setup() {
   const calls: (string | null)[] = []
   const pending: Deferred[] = []
   const states: NoteSaveState[] = []
+  const onFinalError = vi.fn()
   const save = vi.fn((text: string | null) => {
     calls.push(text)
     return new Promise<void>((resolve, reject) => {
       pending.push({ resolve, reject })
     })
   })
-  const autosave = createNoteAutosave({ save, onState: (state) => states.push(state) })
+  const autosave = createNoteAutosave({ save, onState: (state) => states.push(state), onFinalError })
   const settle = async (index: number) => {
     pending[index]?.resolve()
     await vi.advanceTimersByTimeAsync(0)
@@ -23,7 +24,7 @@ function setup() {
     pending[index]?.reject(new Error('offline'))
     await vi.advanceTimersByTimeAsync(0)
   }
-  return { autosave, calls, states, save, settle, fail }
+  return { autosave, calls, states, save, settle, fail, onFinalError }
 }
 
 describe('createNoteAutosave', () => {
@@ -106,6 +107,32 @@ describe('createNoteAutosave', () => {
     expect(calls).toEqual(['a', 'ab'])
     await settle(1)
     expect(states.at(-1)).toBe('saved')
+  })
+
+  it('reports a failed last save through onFinalError when it settles after dispose (unmount flush)', async () => {
+    const { autosave, states, fail, onFinalError } = setup()
+    autosave.change('a')
+    autosave.flush()
+    autosave.dispose()
+    const before = states.length
+    await fail(0)
+    expect(onFinalError).toHaveBeenCalledTimes(1)
+    expect(states).toHaveLength(before) // onState stays silent after dispose
+  })
+
+  it('does not call onFinalError for a successful save after dispose, or a failure before dispose', async () => {
+    const first = setup()
+    first.autosave.change('a')
+    first.autosave.flush()
+    first.autosave.dispose()
+    await first.settle(0)
+    expect(first.onFinalError).not.toHaveBeenCalled()
+
+    const second = setup()
+    second.autosave.change('a')
+    await vi.advanceTimersByTimeAsync(800)
+    await second.fail(0)
+    expect(second.onFinalError).not.toHaveBeenCalled()
   })
 
   it('dispose cancels a pending timer without saving, and flush afterwards does nothing', async () => {
