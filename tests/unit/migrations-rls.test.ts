@@ -6,6 +6,10 @@ import { rpcFunctions, schemaTables, tableSecurity } from '../setup/schema-table
 
 const ALL_COMMANDS = ['delete', 'insert', 'select', 'update']
 
+// Tables whose policies are intentionally not owner-scoped (world-readable reference data and the like).
+// Adding a name here is a deliberate, reviewed act; every table so far is private to its owner.
+const INTENTIONALLY_UNSCOPED_TABLES: string[] = []
+
 describe('migration parser (current migrations)', () => {
   it('finds exactly the works and copies tables, sorted', () => {
     expect(schemaTables()).toEqual(['copies', 'works'])
@@ -16,6 +20,7 @@ describe('migration parser (current migrations)', () => {
     expect(security.rlsEnabled).toBe(true)
     expect([...security.policies].sort()).toEqual(ALL_COMMANDS)
     expect(security.anonRevoked).toBe(true)
+    expect(security.unscopedPolicies).toEqual([])
   })
 
   it.each(['create_work_with_copy', 'delete_copy'])('lists %s with every hardening flag set', (name) => {
@@ -70,6 +75,41 @@ describe('the gate can fail (synthetic migrations)', () => {
     expect([...tableSecurity('notes', covered).policies].sort()).toEqual(ALL_COMMANDS)
     const disabled = `${covered} alter table public.notes disable row level security;`
     expect(tableSecurity('notes', disabled).rlsEnabled).toBe(false)
+  })
+
+  it('reports policies whose predicate is not an owner check', () => {
+    const sql = `
+      create table public.notes (id uuid primary key, user_id uuid not null);
+      alter table public.notes enable row level security;
+      create policy "notes_select" on public.notes for select to authenticated using (true);
+      create policy "notes_insert" on public.notes for insert to authenticated with check (true);
+      create policy "notes_update" on public.notes for update to authenticated
+        using ((select auth.uid()) = user_id) with check (true);
+      create policy "notes_delete" on public.notes for delete to authenticated using ((select auth.uid()) is not null);
+      create policy "notes_insert_no_check" on public.notes for insert to authenticated;
+    `
+    expect(tableSecurity('notes', sql).unscopedPolicies).toEqual([
+      'notes_select',
+      'notes_insert',
+      'notes_update',
+      'notes_delete',
+      'notes_insert_no_check',
+    ])
+  })
+
+  it('accepts owner checks in either order, with or without the select wrapper, and an update with only using', () => {
+    const sql = `
+      create table public.notes (id uuid primary key, user_id uuid not null);
+      alter table public.notes enable row level security;
+      create policy "a" on public.notes for select to authenticated using ((select auth.uid()) = user_id);
+      create policy "b" on public.notes for select to authenticated using (user_id = (select auth.uid()));
+      create policy "c" on public.notes for delete to authenticated using (auth.uid() = notes.user_id);
+      create policy "d" on public.notes for insert to authenticated with check ((select auth.uid()) = user_id);
+      create policy "e" on public.notes for update to authenticated using ((select auth.uid()) = user_id);
+      create policy "f" on public.notes for all to authenticated
+        using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+    `
+    expect(tableSecurity('notes', sql).unscopedPolicies).toEqual([])
   })
 
   it('reports an anon grant that follows the revoke', () => {
@@ -132,6 +172,9 @@ describe('AUTH-07 hardening of every migrated table and function', () => {
     expect(security.rlsEnabled, `${table}: row level security is not enabled`).toBe(true)
     expect([...security.policies].sort(), `${table}: missing policy`).toEqual(ALL_COMMANDS)
     expect(security.anonRevoked, `${table}: not revoked from anon`).toBe(true)
+    if (!INTENTIONALLY_UNSCOPED_TABLES.includes(table)) {
+      expect(security.unscopedPolicies, `${table}: policy is not scoped to auth.uid() = user_id`).toEqual([])
+    }
   })
 
   it.each(functions.map((fn) => fn.name))('function %s: INVOKER, search_path set, no anon/public execute', (name) => {

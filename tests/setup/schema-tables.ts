@@ -9,6 +9,8 @@ export type PolicyCommand = 'select' | 'insert' | 'update' | 'delete'
 export interface TableSecurity {
   rlsEnabled: boolean
   policies: Set<PolicyCommand>
+  /** Names of policies whose USING / WITH CHECK is missing or is not an owner check (auth.uid() = user_id). */
+  unscopedPolicies: string[]
   anonRevoked: boolean
 }
 
@@ -56,6 +58,34 @@ function grantedRoles(sql: string, objectPattern: string): string[] {
   return roles
 }
 
+// The text inside the parentheses that follow `keyword` in a policy body, or null when the clause is absent.
+function clauseOf(body: string, keyword: RegExp): string | null {
+  const start = keyword.exec(body)
+  if (!start) return null
+  let depth = 0
+  const from = start.index + start[0].length
+  for (let index = from; index < body.length; index += 1) {
+    const char = body[index]
+    if (char === '(') depth += 1
+    else if (char === ')') {
+      if (depth === 0) return body.slice(from, index)
+      depth -= 1
+    }
+  }
+  throw new Error(`Unbalanced parentheses in policy clause: "${body.trim()}"`)
+}
+
+// An owner check compares auth.uid() with the user_id column, in either order. `using (true)` and
+// `auth.uid() is not null` do not qualify: they open every row (or every row of any signed-in user).
+const OWNER_CHECK = [
+  /auth\.uid\(\)\s*\)?\s*=\s*(?:\w+\.)?user_id\b/i,
+  /\b(?:\w+\.)?user_id\s*=\s*\(?\s*(?:select\s+)?auth\.uid\(\)/i,
+]
+
+function isOwnerCheck(predicate: string | null): boolean {
+  return predicate !== null && OWNER_CHECK.some((pattern) => pattern.test(predicate))
+}
+
 export function schemaTables(sql: string = migrationsSql()): string[] {
   const text = normalize(sql)
   const tables = new Set<string>()
@@ -89,13 +119,23 @@ export function tableSecurity(table: string, sql: string = migrationsSql()): Tab
   for (const match of text.matchAll(rlsPattern)) rlsEnabled = (match[1] ?? '').toLowerCase() === 'enable'
 
   const policies = new Set<PolicyCommand>()
-  const policyPattern = new RegExp(`create\\s+policy\\s+(?:"[^"]*"|\\w+)\\s+on\\s+public\\.${name}\\b([^;]*);`, 'gi')
+  const unscopedPolicies: string[] = []
+  const policyPattern = new RegExp(`create\\s+policy\\s+(\\S+)\\s+on\\s+public\\.${name}\\b([^;]*);`, 'gi')
   for (const match of text.matchAll(policyPattern)) {
-    const body = match[1] ?? ''
+    const body = match[2] ?? ''
     const command = body.match(/\bfor\s+(select|insert|update|delete|all)\b/i)?.[1]?.toLowerCase()
     // A policy without a FOR clause applies to ALL commands.
     if (!command || command === 'all') COMMANDS.forEach((each) => policies.add(each))
     else policies.add(command as PolicyCommand)
+
+    // INSERT is governed by WITH CHECK alone; SELECT and DELETE by USING alone; UPDATE and ALL by USING (an
+    // absent WITH CHECK falls back to it). Any clause that is present must be an owner check.
+    const using = clauseOf(body, /\busing\s*\(/i)
+    const withCheck = clauseOf(body, /\bwith\s+check\s*\(/i)
+    const governing = command === 'insert' ? withCheck : using
+    const scoped =
+      isOwnerCheck(governing) && (using === null || isOwnerCheck(using)) && (withCheck === null || isOwnerCheck(withCheck))
+    if (!scoped) unscopedPolicies.push(match[1] ?? '')
   }
 
   let revoked = false
@@ -108,7 +148,7 @@ export function tableSecurity(table: string, sql: string = migrationsSql()): Tab
   }
   const regranted = grantedRoles(text, `(?:table\\s+)?public\\.${name}`).includes('anon')
 
-  return { rlsEnabled, policies, anonRevoked: revoked && !regranted }
+  return { rlsEnabled, policies, unscopedPolicies, anonRevoked: revoked && !regranted }
 }
 
 export function rpcFunctions(sql: string = migrationsSql()): RpcFunction[] {
